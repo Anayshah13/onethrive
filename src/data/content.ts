@@ -22,6 +22,42 @@ export const rating = { score: "4.9", label: "Trusted by teams across all sector
 export const aboutCopy =
   "We design offsites that improve how teams work together. Each one is shaped around your team's context, goals, and dynamics.";
 
+/* "The crew" section: the Gen Z team behind OneThrive. */
+export const crew = {
+  eyebrow: "The crew",
+  heading: { lead: "Young team. Serious about how", accent: "your team works." },
+  intro:
+    "We're India's first Gen Z-led employee engagement company. The people who plan your day are the ones who show up and run it.",
+  principles: [
+    {
+      title: "One team, not five vendors",
+      body: "Sports, wellness, workshops and the party after. One relationship, one standard.",
+    },
+    {
+      title: "Built around your goals",
+      body: "No templates. Every format is shaped around your team's size, context and what the day should change.",
+    },
+    {
+      title: "In the room, start to finish",
+      body: "Planning, logistics and the day itself. We take it off your plate so you're not stitching it together.",
+    },
+  ],
+  photos: [
+    {
+      src: "/photos/onethrive-crew.jpg",
+      alt: "Five OneThrive team members in black branded tees beside the OneThrive banner at a turf",
+    },
+    {
+      src: "/photos/onethrive-duo.jpg",
+      alt: "Two OneThrive team members with arms crossed beside the OneThrive banner",
+    },
+    {
+      src: "/photos/happi-planet-wall.jpg",
+      alt: "The Happi Planet team with the mural they painted together at a OneThrive workshop",
+    },
+  ],
+} as const;
+
 export const heroSlides = [
   { src: "/photos/stage-artist.jpg", alt: "A performer on stage at a client foundation day" },
   { src: "/photos/offsite-group.jpg", alt: "A full offsite group gathered on a lawn" },

@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useRef } from "react";
 import { heroSlides, stats } from "@/data/content";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { heroCurve, heroCurveMobile } from "./curves";
+import { FlowLine } from "./decor";
 
 const DWELL = 6;
 const FADE = 1.2;
@@ -14,10 +16,17 @@ export function Hero() {
   useGSAP(
     () => {
       const el = root.current;
-      if (!el || prefersReducedMotion()) return;
-
+      if (!el) return;
       const q = gsap.utils.selector(el);
-      const slides = q<HTMLElement>(".hero-slide");
+
+      if (prefersReducedMotion()) {
+        q<HTMLElement>("[data-count]").forEach((node) => {
+          node.textContent = Number(node.dataset.count).toLocaleString("en-IN");
+        });
+        return;
+      }
+
+            const slides = q<HTMLElement>(".hero-slide");
       const kb = q<HTMLElement>(".hero-kb");
       const bars = q<HTMLElement>(".hero-bar");
       const n = slides.length;
@@ -25,7 +34,20 @@ export function Hero() {
       /* Intro */
       const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
       intro
-        .from(".hero-intro", { scale: 1.2, duration: 2.2 }, 0)
+        .from(
+          ".hero-screen",
+          {
+            rotateX: 34,
+            scale: 0.84,
+            yPercent: 8,
+            transformPerspective: 1600,
+            transformOrigin: "50% 100%",
+            duration: 2,
+            ease: "expo.out",
+          },
+          0,
+        )
+        .from(".hero-intro", { scale: 1.25, duration: 2.4 }, 0)
         .from(".hero-line", { yPercent: 110, duration: 1.4, stagger: 0.12 }, 0.2)
         .from(".hero-stat", { y: 28, autoAlpha: 0, duration: 1.2, stagger: 0.12 }, 0.5)
         .from(".hero-meta", { autoAlpha: 0, duration: 1 }, 0.9);
@@ -36,9 +58,9 @@ export function Hero() {
         node.textContent = "0";
         gsap.to(counter, {
           v: target,
-          duration: 2,
-          delay: 0.55,
-          ease: "power3.out",
+          duration: 2.6,
+          delay: 0.7,
+          ease: "expo.out",
           onUpdate: () => {
             node.textContent = Math.round(counter.v).toLocaleString("en-IN");
           },
@@ -72,6 +94,16 @@ export function Hero() {
         }
       }
 
+      /* On scroll the screen keeps tipping toward the viewer: its lower edge swings out of the monitor */
+      gsap.to(".hero-tilt", {
+        rotateX: 16,
+        scale: 0.92,
+        transformPerspective: 1600,
+        transformOrigin: "50% 0%",
+        ease: "none",
+        scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
+      });
+
       /* Scroll parallax (only on the image layer and the z-20 headline itself) */
       gsap.to(".hero-parallax", {
         yPercent: 12,
@@ -90,7 +122,8 @@ export function Hero() {
 
   return (
     <section ref={root} aria-label="Intro" className="px-2 pt-2 md:px-3 md:pt-3">
-      <div className="relative h-[100svh] max-h-[980px] min-h-[640px] overflow-hidden rounded-[28px] bg-ink md:rounded-[36px]">
+      <div className="hero-tilt will-change-transform">
+      <div className="hero-screen relative h-[100svh] max-h-[980px] min-h-[640px] overflow-hidden rounded-[28px] bg-ink md:rounded-[36px]">
         {/* Photo layer (no z-index so the squiggle can pass over it) */}
         <div className="hero-parallax absolute inset-x-0 -top-[14%] bottom-0">
           <div className="hero-intro absolute inset-0">
@@ -125,13 +158,16 @@ export function Hero() {
           style={{ background: "radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(21,23,23,0.55) 100%)" }}
         />
 
+        {/* The squiggle lives inside the screen so it is fully drawn on load and tilts with it */}
+        <FlowLine curve={heroCurve} mobileCurve={heroCurveMobile} intro={1} introDelay={0.6} className="z-10" />
+
         {/* Stats */}
-        <dl className="absolute right-6 top-28 z-20 flex flex-col items-end gap-4 text-cream md:right-12 md:top-32 md:gap-6">
+        <dl className="absolute right-6 top-[34%] z-20 flex flex-col items-end gap-4 text-cream md:right-[14%] md:top-[30%] md:gap-8">
           {stats.map((stat) => (
-            <div key={stat.label} className="hero-stat flex items-baseline gap-3">
-              <dt className="order-2 max-w-28 text-xs leading-snug text-cream/80 md:text-sm">{stat.label}</dt>
+            <div key={stat.label} className="hero-stat flex flex-col items-end gap-2">
+              <dt className="order-2 text-xs tracking-[0.14em] text-cream/75 uppercase md:text-[13px]">{stat.label}</dt>
               <dd className="order-1 font-display text-[clamp(2.6rem,5vw,4.5rem)] font-medium leading-none tracking-tight tabular-nums">
-                <span data-count={stat.value}>{stat.value.toLocaleString("en-IN")}</span>
+                <span data-count={stat.value}>0</span>
                 <span className="ml-1 font-light text-mint">{stat.suffix}</span>
               </dd>
             </div>
@@ -169,6 +205,7 @@ export function Hero() {
             <span className="hero-cue absolute inset-0 bg-mint" />
           </span>
         </div>
+      </div>
       </div>
       <style>{`
         @keyframes hero-cue { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(100%); } }

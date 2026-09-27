@@ -5,7 +5,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { activities, activityCount, offers } from "@/data/content";
 import { EASE_OUT, EASE_SPRING, gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
-import { FlowLine } from "./decor";
+import { offerCurve } from "./curves";
+import { FlowLine, Glow, PixelCluster } from "./decor";
 import { Close } from "./icons";
 import { Reveal } from "./reveal";
 import { lockScroll } from "./smooth-scroll";
@@ -269,32 +270,16 @@ export function Offer() {
   );
 
   return (
-    <section id="offer" className="relative py-24 md:py-36">
+    <section id="offer" className="relative isolate py-24 md:py-36">
+      <Glow className="-z-10 top-24 -left-20 size-[28rem]" />
+      <Glow tone="soft" className="-z-10 bottom-10 -right-24 size-[32rem]" />
+      <PixelCluster cols={12} rows={7} seed={11} className="absolute top-16 right-4 md:right-10" />
+      <PixelCluster cols={10} rows={6} seed={29} className="absolute bottom-20 left-2 hidden md:block" />
       <FlowLine
         className="z-0"
         start="top 75%"
         end="bottom 70%"
-        points={[
-          [-0.05, 0.22],
-          [0.1, 0.18],
-          [0.3, 0.34],
-          [0.55, 0.28],
-          [0.82, 0.44],
-          [0.62, 0.62],
-          [0.3, 0.7],
-          [0.08, 0.82],
-          [-0.06, 0.96],
-        ]}
-        mobilePoints={[
-          [-0.06, 0.12],
-          [0.05, 0.19],
-          [0.03, 0.3],
-          [0.96, 0.38],
-          [1.0, 0.52],
-          [0.03, 0.62],
-          [0.02, 0.8],
-          [-0.06, 0.94],
-        ]}
+        curve={offerCurve}
       />
       <ShapeDefs />
 

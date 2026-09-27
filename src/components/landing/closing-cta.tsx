@@ -4,21 +4,10 @@ import Image from "next/image";
 import { useRef } from "react";
 import { contact } from "@/data/content";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
-import { FlowLine } from "./decor";
+import { ctaCurve } from "./curves";
+import { FlowLine, PixelCluster } from "./decor";
 import { Reveal } from "./reveal";
 import { TalkButton } from "./talk";
-
-/* A gentle wave crossing the panel, drawn as the panel scrolls into view. */
-const WAVE = [
-  // Hugs the lower edge so it never crosses the headline or the button.
-  [-0.05, 0.8],
-  [0.18, 0.9],
-  [0.38, 0.97],
-  [0.6, 0.93],
-  [0.8, 0.84],
-  [0.93, 0.66],
-  [1.06, 0.5],
-] as const;
 
 const PHOTOS = [
   { src: "/photos/beach-team.jpg", className: "top-10 left-[5%] -rotate-6", speed: -36 },
@@ -60,8 +49,11 @@ export function ClosingCta() {
         <div aria-hidden className="absolute -top-24 -left-16 size-80 rounded-full bg-mint/20 blur-3xl" />
         <div aria-hidden className="absolute -right-20 -bottom-28 size-96 rounded-full bg-emerald/60 blur-3xl" />
 
+        <PixelCluster cols={14} rows={8} seed={61} className="absolute top-6 right-[22%] opacity-20" />
+        <PixelCluster cols={12} rows={6} seed={67} className="absolute bottom-8 left-[30%] hidden opacity-15 md:block" />
+
         <FlowLine
-          points={[...WAVE]}
+          curve={ctaCurve}
           start="top 85%"
           end="center 45%"
           className="z-0"

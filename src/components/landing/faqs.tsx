@@ -4,6 +4,7 @@ import { useId, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { faqs } from "@/data/content";
 import { EASE_OUT, gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { Glow, PixelCluster } from "./decor";
 import { Chevron } from "./icons";
 import { Reveal } from "./reveal";
 import { TalkButton } from "./talk";
@@ -24,7 +25,10 @@ export function Faqs() {
   const toggle = (index: number) => setOpenIndex((current) => (current === index ? -1 : index));
 
   return (
-    <section id="faqs" className="relative py-24 md:py-36">
+    <section id="faqs" className="relative isolate py-24 md:py-36">
+      <Glow tone="soft" className="-z-10 top-1/4 -left-24 size-[30rem]" />
+      <PixelCluster cols={12} rows={7} seed={37} className="absolute -z-10 top-10 left-4 md:left-10" />
+      <PixelCluster cols={10} rows={7} seed={53} className="absolute -z-10 bottom-16 right-4 hidden md:block" />
       <div className="mx-auto grid w-full max-w-[1240px] items-start gap-12 px-5 md:px-8 lg:grid-cols-[1.35fr_0.65fr] lg:gap-20">
         <div>
           <Reveal as="div" stagger={0.06} className="flex flex-col gap-3">

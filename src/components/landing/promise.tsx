@@ -4,7 +4,8 @@ import Image from "next/image";
 import { useRef } from "react";
 import { aboutCopy, clients, rating } from "@/data/content";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
-import { PixelCluster } from "./decor";
+import { promiseCurve } from "./curves";
+import { FlowLine, Glow, PixelCluster } from "./decor";
 import { GoogleMark, Star } from "./icons";
 import { Reveal } from "./reveal";
 import { scrollToHash } from "./smooth-scroll";
@@ -70,9 +71,13 @@ export function PromiseSection() {
   );
 
   return (
-    <section ref={root} id="promise" className="relative py-28 md:py-40">
-      <PixelCluster cols={16} rows={7} seed={3} className="absolute left-0 top-10 opacity-80 md:left-6" />
+    <section ref={root} id="promise" className="relative isolate py-28 md:py-40">
+      <Glow className="-z-10 top-16 right-[8%] size-[26rem]" />
+      <Glow tone="soft" className="-z-10 bottom-0 -left-24 size-[30rem]" />
+      <FlowLine curve={promiseCurve} start="top 70%" end="bottom 60%" className="z-10" />
+      <PixelCluster cols={16} rows={7} seed={3} className="absolute left-0 top-10 md:left-6" />
       <PixelCluster cols={12} rows={8} seed={7} className="absolute bottom-24 right-4 hidden md:block" />
+      <PixelCluster cols={8} rows={6} seed={23} cell={14} className="absolute top-1/2 left-[46%] hidden lg:block" />
 
       <div className="mx-auto grid w-full max-w-[1240px] items-end gap-16 px-5 md:grid-cols-[1.25fr_0.75fr] md:px-8">
         <div className="relative z-20">

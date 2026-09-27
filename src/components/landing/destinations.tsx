@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "
 import { motion, type PanInfo } from "framer-motion";
 import { destinations } from "@/data/content";
 import { prefersReducedMotion } from "@/lib/gsap";
-import { PixelCluster } from "./decor";
+import { Glow, PixelCluster } from "./decor";
 import { ArrowLeft, ArrowRight } from "./icons";
 import { Reveal } from "./reveal";
 
@@ -255,10 +255,13 @@ function MarqueeRow({ items, reverse, duration }: { items: typeof others; revers
 
 export function Destinations() {
   return (
-    <section id="destinations" className="relative py-24 md:py-36">
+    <section id="destinations" className="relative isolate py-24 md:py-36">
+      <Glow className="-z-10 top-1/3 left-1/2 size-[34rem] -translate-x-1/2" />
+      <Glow tone="soft" className="-z-10 bottom-0 -left-20 size-[26rem]" />
+      <PixelCluster cols={10} rows={6} seed={41} className="absolute bottom-16 right-6 hidden md:block" />
       <div className="mx-auto w-full max-w-[1240px] px-5 md:px-8">
         <div className="relative">
-          <PixelCluster cols={12} rows={7} seed={7} className="absolute -top-10 -left-6 -z-0 hidden md:block" />
+          <PixelCluster cols={12} rows={7} seed={7} className="absolute -top-10 -left-6 -z-0" />
           <PixelCluster cols={12} rows={7} seed={19} className="absolute -top-4 -right-6 -z-0 hidden md:block" />
           <Reveal as="header" className="relative mx-auto max-w-3xl text-center">
             <h2 className="font-display text-[clamp(2.5rem,5.5vw,4.75rem)] leading-[1.02] font-light tracking-tight text-balance text-ink">

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { gallery, testimonials } from "@/data/content";
 import { EASE_OUT, gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
-import { PixelCluster } from "./decor";
+import { Glow, PixelCluster } from "./decor";
 import { ArrowLeft, ArrowRight, Star } from "./icons";
 import { Reveal } from "./reveal";
 import { scrollToHash } from "./smooth-scroll";
@@ -79,8 +79,10 @@ export function Testimonials() {
   );
 
   return (
-    <section ref={sectionRef} id="testimonials" className="relative py-24 md:py-36">
-      <PixelCluster cols={14} rows={8} seed={7} className="absolute top-10 left-0 -z-0 hidden md:block" />
+    <section ref={sectionRef} id="testimonials" className="relative isolate py-24 md:py-36">
+      <Glow className="-z-10 top-10 right-[12%] size-[26rem]" />
+      <Glow tone="soft" className="-z-10 bottom-10 left-[8%] size-[30rem]" />
+      <PixelCluster cols={14} rows={8} seed={7} className="absolute top-10 left-0 -z-0" />
       <PixelCluster cols={12} rows={7} seed={19} className="absolute top-1/2 right-0 -z-0 hidden md:block" />
 
       <div className="relative mx-auto w-full max-w-[1240px] px-5 md:px-8">
