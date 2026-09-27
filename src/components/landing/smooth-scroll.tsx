@@ -9,9 +9,20 @@ let lenis: Lenis | null = null;
 /* Scroll to an in-page anchor, through Lenis when it is running. */
 export function scrollToHash(hash: string) {
   const target = document.querySelector<HTMLElement>(hash);
-  if (!target) return;
+  // Off the home page the section doesn't exist here: go to it on the home page.
+  if (!target) {
+    // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- plain helper, no router here
+    window.location.assign(`/${hash === "#top" ? "" : hash}`);
+    return;
+  }
   if (lenis) lenis.scrollTo(target, { offset: -24, duration: 1.4 });
   else target.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
+}
+
+/* Jump to the top without easing, e.g. after a client-side route change. */
+export function resetScroll() {
+  if (lenis) lenis.scrollTo(0, { immediate: true, force: true });
+  else window.scrollTo(0, 0);
 }
 
 export function lockScroll(locked: boolean) {
