@@ -1,69 +1,86 @@
 export const nav = [
-  { label: "Offsites", href: "#destinations" },
-  { label: "About", href: "#about" },
-  { label: "Team", href: "#team" },
-  { label: "Blog", href: "#journal" },
-  { label: "Contact", href: "#contact" },
+  { label: "Why OneThrive", href: "#promise" },
+  { label: "Services", href: "#offer" },
+  { label: "Destinations", href: "#destinations" },
+  { label: "Testimonials", href: "#testimonials" },
+  { label: "FAQs", href: "#faqs" },
 ] as const;
 
+export const contact = {
+  phone: "+91 88502 10248",
+  phoneHref: "tel:+918850210248",
+  email: "info@onethrive.in",
+} as const;
+
 export const stats = [
-  { value: 50, suffix: "+", label: "cities covered" },
-  { value: 2000, suffix: "+", label: "professionals" },
+  { value: 50, suffix: "+", label: "events curated" },
+  { value: 2000, suffix: "+", label: "participants" },
 ] as const;
+
+export const rating = { score: "4.9", label: "Trusted by teams across all sectors" } as const;
 
 export const aboutCopy =
   "We design offsites that improve how teams work together. Each one is shaped around your team's context, goals, and dynamics.";
 
+export const heroSlides = [
+  { src: "/photos/stage-artist.jpg", alt: "A performer on stage at a client foundation day" },
+  { src: "/photos/offsite-group.jpg", alt: "A full offsite group gathered on a lawn" },
+  { src: "/photos/party.jpg", alt: "Colleagues dancing at an evening celebration" },
+  { src: "/photos/champions.jpg", alt: "A corporate cricket league's winning team with the trophy" },
+] as const;
+
 export const clients = [
+  { src: "/clients/Mystique AI_Logo.png", alt: "Mystique AI" },
   { src: "/clients/BDO_Logo.png", alt: "BDO" },
   { src: "/clients/Awfis_Logo.png", alt: "Awfis" },
   { src: "/clients/IIFL Capital_Logo.png", alt: "IIFL Capital" },
   { src: "/clients/Draeger_Logo.png", alt: "Draeger" },
-  { src: "/clients/Zilo_Logo.png", alt: "Zilo" },
+  { src: "/clients/Happi Planet Logo_Green.PNG", alt: "Happi Planet" },
+  { src: "/clients/VGuard Logo.png", alt: "V-Guard" },
   { src: "/clients/Prisma Ai_Logo.png", alt: "Prisma AI" },
   { src: "/clients/Glide Tech Logo.png", alt: "Glide Tech" },
-  { src: "/clients/Happi Planet Logo_Green.PNG", alt: "Happi Planet" },
+  { src: "/clients/Zilo_Logo.png", alt: "Zilo" },
   { src: "/clients/SalesDuo_Logo.png", alt: "SalesDuo" },
-  { src: "/clients/VGuard Logo.png", alt: "V-Guard" },
   { src: "/clients/Ingenero Technologies_Logo.png", alt: "Ingenero" },
   { src: "/clients/Laxmi Dental Limited_Logo.png", alt: "Laxmi Dental" },
-  { src: "/clients/DJSCE_Logo.png", alt: "DJSCE" },
   { src: "/clients/Infytrix Logo.png", alt: "Infytrix" },
   { src: "/clients/Konsultera_Logo.png", alt: "Konsultera" },
-  { src: "/clients/SF Edu Logo.png", alt: "SF Edu" },
+  { src: "/clients/SF Edu Logo.png", alt: "Silver Fern Education" },
   { src: "/clients/EDS Intenational_Logo.png", alt: "EDS International" },
+  { src: "/clients/DJSCE_Logo.png", alt: "DJSCE" },
 ] as const;
 
+/* Each offer's image sits inside its own shape (see OFFER_SHAPES in offer.tsx). */
 export const offers = [
   {
-    title: "Offsites",
-    image: "/destinations/goa.jpg",
-    blurb: "Multi-day retreats shaped around how your team actually works.",
+    title: "Offsite & MICE",
+    image: "/photos/offsite-group.jpg",
+    blurb: "Multi-day retreats and conferences shaped around how your team actually works.",
   },
   {
     title: "Team Building",
-    image: "/event-photos/Team Building/Copy of IMG_7914.PNG",
+    image: "/photos/balloon-build.jpg",
     blurb: "Games and challenges that get a room moving in the same direction.",
   },
   {
-    title: "Wellness",
-    image: "/event-photos/Wellness/Meditation/Copy of IMG_7931.PNG",
-    blurb: "Yoga, sound, and sessions people feel the next morning.",
+    title: "Artist Booking",
+    image: "/photos/stage-artist.jpg",
+    blurb: "Comics, musicians and hosts, booked and run so the night lands.",
   },
   {
-    title: "Day Outs",
-    image: "/event-photos/Carnival/Copy of Copy of 1E4A7342.JPG",
+    title: "Day Outing",
+    image: "/photos/beach-games.jpg",
     blurb: "A single day, fully hosted, from the first icebreaker to the last photo.",
   },
   {
     title: "Event Production",
-    image: "/event-photos/Foundation Day/Copy of Copy of 1E4A7061.JPG",
-    blurb: "Foundation days, carnivals, and celebrations run end to end.",
+    image: "/photos/event-production.jpg",
+    blurb: "Foundation days, carnivals and celebrations, produced end to end.",
   },
   {
-    title: "Creative Workshops",
-    image: "/event-photos/Creative Workshop/Pottery/Copy of IMG_8981.PNG",
-    blurb: "Hands-on studios — clay, paint, and a wall everyone made together.",
+    title: "Wellness",
+    image: "/photos/desk-yoga.jpg",
+    blurb: "Desk yoga, laughter yoga, sound and breath: sessions people feel the next morning.",
   },
 ] as const;
 
@@ -291,40 +308,37 @@ export const activityCount = activities.reduce((sum, group) => sum + group.items
 export const testimonials = [
   {
     quote:
-      "The activity was just the starting point. We left with a team that actually talks to each other again.",
-    name: "People partner",
-    role: "Product company",
-    image: "/event-photos/Group Photo/Copy of Copy of Group Photo.JPG",
-    frames: [
-      "/destinations/kerala.jpg",
-      "/event-photos/Team Building/IMG_1973.PNG",
-      "/destinations/manali.jpg",
-    ],
+      "The OneThrive team delivered an exceptionally well-executed team-building program featuring pottery making and tote bag painting, with seamless coordination and a positive team presence that strengthened collaboration, creativity, and overall team morale.",
+    name: "Santosh Gopalkrishnan",
+    role: "Co-Founder & COO, Mystique AI",
+    initials: "SG",
   },
+  // TODO: placeholder quotes; replace with real client testimonials before launch.
   {
     quote:
       "Sports in the morning, a studio after lunch, one team running both. We stopped juggling five vendors.",
-    name: "HR lead",
+    name: "HR Lead",
     role: "Growing startup",
-    image: "/event-photos/Wellness/Laughter Yoga/Copy of IMG_7922.PNG",
-    frames: [
-      "/event-photos/Creative Workshop/Big Picture/Copy of IMG_5062.JPG",
-      "/destinations/jaipur.jpg",
-      "/event-photos/Carnival/Copy of Copy of 1E4A7160.JPG",
-    ],
+    initials: "HR",
   },
   {
     quote:
       "They shaped the offsite around our goals, not a template. The room felt like ours from the first hour.",
-    name: "Founder's office",
+    name: "Founder's Office",
     role: "Multi-city team",
-    image: "/event-photos/Team Building/Copy of IMG_1939.PNG",
-    frames: [
-      "/destinations/udaipur.jpg",
-      "/event-photos/Festive Celebration/Navratri/Copy of IMG_20251001_165001284_HDR.jpg",
-      "/destinations/bali.jpg",
-    ],
+    initials: "FO",
   },
+] as const;
+
+export const gallery = [
+  { src: "/photos/pottery.jpg", alt: "Pottery wheel workshop" },
+  { src: "/photos/beach-team.jpg", alt: "Team on the beach during an offsite" },
+  { src: "/photos/tug-of-war.jpg", alt: "Tug of war on the lawn" },
+  { src: "/photos/laughter.jpg", alt: "Laughter yoga in the office" },
+  { src: "/photos/navratri.jpg", alt: "Navratri celebration at the office" },
+  { src: "/photos/trophies.jpg", alt: "Trophies lined up for a cricket league" },
+  { src: "/photos/net-lift.jpg", alt: "Team carrying a colleague in a cargo net" },
+  { src: "/photos/caricature.jpg", alt: "Guest holding a live caricature" },
 ] as const;
 
 export const faqs = [
@@ -375,23 +389,5 @@ export const faqs = [
   {
     q: "How do you measure the success of a program?",
     a: "We combine participant feedback and engagement data with post-event insights to evaluate what the experience achieved and identify opportunities to improve future programs.",
-  },
-] as const;
-
-export const journal = [
-  {
-    title: "What a conference room can still do",
-    caption: "Some of the sharpest sessions happen without leaving the building.",
-    image: "/event-photos/Team Building/Copy of IMG_1940.PNG",
-  },
-  {
-    title: "A foundation day, fully hosted",
-    caption: "One relationship from the run of show to the last chair.",
-    image: "/event-photos/Foundation Day/Copy of Copy of 1E4A7202.JPG",
-  },
-  {
-    title: "Remote, and still in the room",
-    caption: "Formats built so hybrid teams feel the same pull.",
-    image: "/event-photos/Virtual/Copy of IMG_023.png",
   },
 ] as const;

@@ -1,7 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { contact } from "@/data/content";
+import { EASE_OUT } from "@/lib/gsap";
+import { Close, Mail, Phone } from "./icons";
+import { lockScroll } from "./smooth-scroll";
+import { PillButton } from "./ui";
 
 type TalkValue = {
   open: boolean;
@@ -23,26 +28,74 @@ export function useTalk() {
 
 export function TalkButton({
   className = "",
-  children = "Let's Talk",
+  children = "Plan your offsite",
+  variant = "mint",
+  size = "md",
 }: {
   className?: string;
   children?: React.ReactNode;
+  variant?: "mint" | "ink" | "light";
+  size?: "sm" | "md" | "lg";
 }) {
   const { setOpen } = useTalk();
   return (
-    <button
+    <PillButton onClick={() => setOpen(true)} variant={variant} size={size} className={className}>
+      {children}
+    </PillButton>
+  );
+}
+
+/* The floating mail button from the mock: always one tap away from a brief. */
+export function ContactFab() {
+  const { open, setOpen } = useTalk();
+  return (
+    <motion.button
       type="button"
       onClick={() => setOpen(true)}
-      className={`rounded-full bg-[#3ddc84] px-5 py-2.5 text-sm font-semibold text-[#062214] transition hover:bg-[#2ecf76] ${className}`}
+      aria-label="Write to OneThrive"
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: open ? 0.6 : 1, opacity: open ? 0 : 1 }}
+      transition={{ delay: open ? 0 : 1.4, type: "spring", stiffness: 260, damping: 22 }}
+      className="group fixed right-4 bottom-4 z-40 grid size-14 cursor-pointer place-items-center rounded-full bg-ink text-cream shadow-[0_18px_40px_-12px_rgba(34,36,36,0.6)] ring-1 ring-white/10 transition-transform duration-500 ease-spring hover:scale-105 md:right-8 md:bottom-8 md:size-16"
     >
-      {children}
-    </button>
+      <span className="absolute top-0.5 right-0.5 size-3.5 rounded-full bg-mint ring-2 ring-ink">
+        <span className="pulse-ring absolute inset-0 rounded-full bg-mint" />
+      </span>
+      <Mail className="size-6 transition-transform duration-500 ease-spring group-hover:-rotate-12" />
+    </motion.button>
   );
 }
 
 export function TalkDrawer() {
   const { open, setOpen } = useTalk();
   const [sent, setSent] = useState(false);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    lockScroll(open);
+    if (!open) return;
+    closeRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, setOpen]);
+
+  const submit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const get = (key: string) => String(data.get(key) ?? "").trim();
+    const body = [
+      `Name: ${get("name")}`,
+      `Company: ${get("company")}`,
+      `Work email: ${get("email")}`,
+      `Team size: ${get("size") || "Not sure yet"}`,
+      "",
+      get("message"),
+    ].join("\n");
+    const subject = `Offsite brief from ${get("company") || get("name")}`;
+    window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setSent(true);
+  };
 
   return (
     <AnimatePresence>
@@ -51,7 +104,8 @@ export function TalkDrawer() {
           <motion.button
             type="button"
             aria-label="Close dialog"
-            className="fixed inset-0 z-[70] bg-[#062214]/40"
+            tabIndex={-1}
+            className="fixed inset-0 z-[70] cursor-default bg-ink/40 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -59,83 +113,109 @@ export function TalkDrawer() {
           />
           <motion.aside
             role="dialog"
+            aria-modal="true"
             aria-labelledby="talk-title"
-            className="fixed top-0 right-0 z-[80] flex h-full w-full max-w-md flex-col overflow-y-auto bg-[#f7fbf8] px-6 py-7 shadow-2xl sm:px-8"
-            initial={{ x: "100%" }}
+            data-lenis-prevent
+            className="fixed top-2 right-2 bottom-2 z-[80] flex w-[calc(100%-1rem)] max-w-[480px] flex-col overflow-y-auto rounded-[28px] bg-cream p-2 shadow-[0_40px_80px_-20px_rgba(18,63,48,0.45)] ring-1 ring-ink/5"
+            initial={{ x: "105%" }}
             animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ type: "spring", stiffness: 320, damping: 34 }}
+            exit={{ x: "105%" }}
+            transition={{ type: "spring", stiffness: 260, damping: 32 }}
           >
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <p className="text-xs font-semibold tracking-[0.18em] text-[#14914a] uppercase">
-                  Let&apos;s talk
-                </p>
-                <h2 id="talk-title" className="font-display mt-2 text-3xl leading-tight text-[#122018]">
-                  Tell us about the team.
-                </h2>
-              </div>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="grid size-10 place-items-center rounded-full border border-black/10 text-lg"
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </div>
-            <p className="mt-3 text-sm leading-6 text-[#122018]/70">
-              Group size, city, and what you want the day to change. We&apos;ll shape the format around that.
-            </p>
-
-            {sent ? (
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mt-8 rounded-3xl bg-white p-6"
-              >
-                <p className="font-display text-2xl">Noted.</p>
-                <p className="mt-2 text-sm leading-6 text-[#122018]/70">
-                  This preview keeps the note on this page only. Share the inbox you want enquiries to reach and
-                  I&apos;ll wire the form to it.
-                </p>
+            <div className="relative overflow-hidden rounded-[22px] bg-ink px-6 pt-6 pb-8 text-cream sm:px-8">
+              <div className="absolute -top-16 -right-10 size-56 rounded-full bg-mint/25 blur-3xl" aria-hidden />
+              <div className="relative flex items-start justify-between gap-4">
+                <span className="text-[11px] font-medium tracking-[0.2em] text-mint uppercase">Let&apos;s talk</span>
                 <button
+                  ref={closeRef}
                   type="button"
-                  className="mt-5 text-sm font-semibold text-[#14914a]"
-                  onClick={() => setSent(false)}
+                  onClick={() => setOpen(false)}
+                  className="grid size-10 cursor-pointer place-items-center rounded-full bg-white/10 transition-colors hover:bg-white/20"
+                  aria-label="Close"
                 >
-                  Write another
+                  <Close className="size-4" />
                 </button>
-              </motion.div>
-            ) : (
-              <form
-                className="mt-8 flex flex-col gap-4"
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  setSent(true);
-                }}
-              >
-                <Field label="Name" name="name" required />
-                <Field label="Work email" name="email" type="email" required />
-                <Field label="Company" name="company" required />
-                <Field label="Team size" name="size" placeholder="e.g. 40" />
-                <label className="flex flex-col gap-1.5 text-sm font-medium">
-                  What should the day do?
-                  <textarea
-                    name="message"
-                    required
-                    rows={4}
-                    className="rounded-2xl border border-black/10 bg-white px-4 py-3 font-normal outline-none focus:border-[#3ddc84]"
-                  />
-                </label>
-                <button
-                  type="submit"
-                  className="mt-2 rounded-full bg-[#122018] px-5 py-3 text-sm font-semibold text-white"
-                >
-                  Send the brief
-                </button>
-              </form>
-            )}
+              </div>
+              <h2 id="talk-title" className="relative mt-6 font-display text-4xl leading-[1.05] font-light tracking-tight">
+                Tell us about <span className="font-serif text-mint italic">your team.</span>
+              </h2>
+              <p className="relative mt-3 max-w-sm text-sm leading-6 text-cream/65">
+                Group size, city, and what you want the day to change. We&apos;ll shape the format around that.
+              </p>
+            </div>
+
+            <div className="px-4 pt-6 pb-4 sm:px-6">
+              <AnimatePresence mode="wait">
+                {sent ? (
+                  <motion.div
+                    key="sent"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6, ease: EASE_OUT }}
+                    className="rounded-3xl bg-white p-6 ring-1 ring-ink/5"
+                  >
+                    <p className="font-display text-2xl">Your brief is ready to send.</p>
+                    <p className="mt-2 text-sm leading-6 text-grey">
+                      We opened your email app with everything filled in. If nothing opened, write to{" "}
+                      <a className="font-semibold text-emerald underline underline-offset-4" href={`mailto:${contact.email}`}>
+                        {contact.email}
+                      </a>{" "}
+                      or call {contact.phone}.
+                    </p>
+                    <button
+                      type="button"
+                      className="mt-5 cursor-pointer text-sm font-semibold text-emerald"
+                      onClick={() => setSent(false)}
+                    >
+                      Edit the brief
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="form"
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.6, ease: EASE_OUT, delay: 0.15 }}
+                    className="flex flex-col gap-4"
+                    onSubmit={submit}
+                  >
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field label="Name" name="name" autoComplete="name" required />
+                      <Field label="Company" name="company" autoComplete="organization" required />
+                    </div>
+                    <Field label="Work email" name="email" type="email" autoComplete="email" required />
+                    <Field label="Team size" name="size" inputMode="numeric" placeholder="e.g. 40" />
+                    <label className="flex flex-col gap-1.5 text-sm font-medium">
+                      What should the day do?
+                      <textarea
+                        name="message"
+                        required
+                        rows={4}
+                        placeholder="An offsite in Goa for 60, focused on cross-team trust…"
+                        className="rounded-2xl bg-white px-4 py-3 font-normal ring-1 ring-ink/10 transition-shadow outline-none placeholder:text-grey/60 focus:ring-2 focus:ring-emerald"
+                      />
+                    </label>
+                    <div className="mt-2 flex flex-wrap items-center justify-between gap-4">
+                      <button
+                        type="submit"
+                        className="group inline-flex cursor-pointer items-center gap-3 rounded-full bg-ink py-1.5 pr-1.5 pl-5 text-sm font-semibold text-cream transition-transform duration-500 ease-spring active:scale-[0.97]"
+                      >
+                        Send the brief
+                        <span className="grid size-9 place-items-center rounded-full bg-mint text-ink transition-transform duration-500 ease-spring group-hover:translate-x-0.5 group-hover:scale-105">
+                          <Mail className="size-4" />
+                        </span>
+                      </button>
+                      <a href={contact.phoneHref} className="inline-flex items-center gap-2 text-sm text-grey hover:text-emerald">
+                        <Phone className="size-4" />
+                        {contact.phone}
+                      </a>
+                    </div>
+                  </motion.form>
+                )}
+              </AnimatePresence>
+            </div>
           </motion.aside>
         </>
       )}
@@ -145,26 +225,18 @@ export function TalkDrawer() {
 
 function Field({
   label,
-  name,
-  type = "text",
-  required,
-  placeholder,
-}: {
-  label: string;
-  name: string;
-  type?: string;
-  required?: boolean;
-  placeholder?: string;
-}) {
+  ...input
+}: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <label className="flex flex-col gap-1.5 text-sm font-medium">
-      {label}
+      <span>
+        {label}
+        {input.required && <span className="text-emerald"> *</span>}
+      </span>
       <input
-        name={name}
-        type={type}
-        required={required}
-        placeholder={placeholder}
-        className="rounded-2xl border border-black/10 bg-white px-4 py-3 font-normal outline-none focus:border-[#3ddc84]"
+        type="text"
+        {...input}
+        className="h-12 rounded-2xl bg-white px-4 font-normal ring-1 ring-ink/10 transition-shadow outline-none placeholder:text-grey/60 focus:ring-2 focus:ring-emerald"
       />
     </label>
   );

@@ -1,39 +1,176 @@
 @import "tailwindcss";
+@import "lenis/dist/lenis.css";
 
+/*
+ * OneThrive design tokens.
+ * Brand palette: Tropical Mint, Emerald Depths, Mint Cream, Dim Grey, Carbon Black.
+ * Everything else is derived from those five.
+ */
 :root {
-  --background: #f4fbf7;
-  --foreground: #122018;
+  --mint: #00ffab;
+  --emerald: #1b6148;
+  --cream: #f4fffb;
+  --grey: #6b6f6d;
+  --ink: #222424;
+
+  --line: #14d98f; /* mint pulled toward emerald so the squiggle reads on cream */
+  --mint-soft: #c9f7e4;
+  --mint-wash: #e3fbf1;
+  --emerald-deep: #123f30;
+  --ink-soft: #2d3030;
+  --ink-deep: #151717;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-outfit), "Outfit", sans-serif;
+  --color-mint: var(--mint);
+  --color-emerald: var(--emerald);
+  --color-cream: var(--cream);
+  --color-grey: var(--grey);
+  --color-ink: var(--ink);
+  --color-line: var(--line);
+  --color-mint-soft: var(--mint-soft);
+  --color-mint-wash: var(--mint-wash);
+  --color-emerald-deep: var(--emerald-deep);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-deep: var(--ink-deep);
+
+  --font-sans: var(--font-body), "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-heading), "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-accent), "Instrument Serif", ui-serif, Georgia, serif;
+
+  --ease-out: var(--ease-out);
+  --ease-spring: var(--ease-spring);
+
+  --shadow-float: 0 1px 1px rgba(34, 36, 36, 0.04), 0 12px 32px -12px rgba(27, 97, 72, 0.18);
+  --shadow-lift: 0 2px 2px rgba(34, 36, 36, 0.04), 0 30px 60px -24px rgba(27, 97, 72, 0.32);
+  --shadow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 html {
-  scroll-behavior: smooth;
+  background: var(--cream);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--cream);
+  color: var(--ink);
+  font-feature-settings: "ss01", "cv11";
+  text-rendering: optimizeLegibility;
 }
 
-.font-display {
-  font-family: var(--font-display-family), "Bricolage Grotesque", sans-serif;
+::selection {
+  background: var(--mint);
+  color: var(--ink);
 }
 
-.marquee-mask {
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+:focus-visible {
+  outline: 2px solid var(--emerald);
+  outline-offset: 3px;
+  border-radius: 6px;
 }
 
 section {
-  scroll-margin-top: 88px;
+  scroll-margin-top: 96px;
+}
+
+.text-balance {
+  text-wrap: balance;
+}
+
+/* Eyebrow pill, used ahead of section headings */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--ink) 14%, transparent);
+  padding: 0.35rem 0.85rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--line);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--mint) 25%, transparent);
+}
+
+/* Film grain, fixed so it never repaints with scroll */
+.grain {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.marquee-mask {
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+@keyframes marquee {
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.marquee {
+  animation: marquee var(--marquee-duration, 40s) linear infinite;
+}
+
+.marquee-reverse {
+  animation-direction: reverse;
+}
+
+.marquee-host:hover .marquee {
+  animation-play-state: paused;
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: var(--o, 0.5);
+  }
+  50% {
+    opacity: calc(var(--o, 0.5) * 0.35);
+  }
+}
+
+.pixel {
+  animation: twinkle var(--d, 6s) ease-in-out var(--delay, 0s) infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(2.4);
+    opacity: 0;
+  }
+}
+
+.pulse-ring {
+  animation: pulse-ring 2.2s var(--ease-out) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
   }
 }

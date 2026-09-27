@@ -2,86 +2,179 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { stats } from "@/data/content";
+import { heroSlides, stats } from "@/data/content";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+
+const DWELL = 6;
+const FADE = 1.2;
 
 export function Hero() {
   const root = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
-      if (prefersReducedMotion()) return;
-      const timeline = gsap.timeline({ defaults: { ease: "power3.out" } });
-      timeline
-        .from(".hero-photo", { scale: 1.08, duration: 1.5 }, 0)
-        .from(".hero-line", { y: 36, opacity: 0, stagger: 0.12, duration: 0.9 }, 0.15)
-        .from(".hero-stat", { y: 18, opacity: 0, stagger: 0.1, duration: 0.7 }, 0.35)
-        .from(".hero-scroll", { scale: 0.6, opacity: 0, duration: 0.5 }, 0.7);
+      const el = root.current;
+      if (!el || prefersReducedMotion()) return;
 
-      stats.forEach((stat, index) => {
-        const node = root.current?.querySelectorAll<HTMLElement>("[data-count]")[index];
-        if (!node) return;
-        const counter = { n: 0 };
+      const q = gsap.utils.selector(el);
+      const slides = q<HTMLElement>(".hero-slide");
+      const kb = q<HTMLElement>(".hero-kb");
+      const bars = q<HTMLElement>(".hero-bar");
+      const n = slides.length;
+
+      /* Intro */
+      const intro = gsap.timeline({ defaults: { ease: "expo.out" } });
+      intro
+        .from(".hero-intro", { scale: 1.2, duration: 2.2 }, 0)
+        .from(".hero-line", { yPercent: 110, duration: 1.4, stagger: 0.12 }, 0.2)
+        .from(".hero-stat", { y: 28, autoAlpha: 0, duration: 1.2, stagger: 0.12 }, 0.5)
+        .from(".hero-meta", { autoAlpha: 0, duration: 1 }, 0.9);
+
+      q<HTMLElement>("[data-count]").forEach((node) => {
+        const target = Number(node.dataset.count);
+        const counter = { v: 0 };
+        node.textContent = "0";
         gsap.to(counter, {
-          n: stat.value,
-          duration: 1.5,
-          delay: 0.45,
-          ease: "power2.out",
+          v: target,
+          duration: 2,
+          delay: 0.55,
+          ease: "power3.out",
           onUpdate: () => {
-            node.textContent = `${Math.round(counter.n).toLocaleString("en-IN")}${stat.suffix}`;
+            node.textContent = Math.round(counter.v).toLocaleString("en-IN");
           },
         });
+      });
+
+      /* Slideshow: crossfade + Ken Burns, looping */
+      if (n > 1) {
+        gsap.set(slides, { autoAlpha: 0 });
+        gsap.set(slides[0], { autoAlpha: 1 });
+        gsap.set(bars, { scaleX: 0 });
+
+        const show = gsap.timeline({ repeat: -1 });
+        for (let i = 0; i < n; i++) {
+          const next = (i + 1) % n;
+          const start = i * DWELL;
+          const out = start + DWELL - FADE;
+
+          show.fromTo(kb[i], { scale: 1.12 }, { scale: 1, duration: DWELL + FADE, ease: "none" }, i === 0 ? 0 : start - FADE);
+          show.fromTo(bars[i], { scaleX: 0 }, { scaleX: 1, duration: DWELL, ease: "none" }, start);
+          show.set(bars[i], { scaleX: 0 }, start + DWELL);
+
+          if (next !== 0) {
+            show.to(slides[next], { autoAlpha: 1, duration: FADE, ease: "power1.inOut" }, out);
+            show.set(slides[i], { autoAlpha: 0 }, out + FADE);
+          } else {
+            show.set(kb[0], { scale: 1.12 }, out);
+            show.set(slides[0], { autoAlpha: 1 }, out);
+            show.to(slides[i], { autoAlpha: 0, duration: FADE, ease: "power1.inOut" }, out);
+          }
+        }
+      }
+
+      /* Scroll parallax (only on the image layer and the z-20 headline itself) */
+      gsap.to(".hero-parallax", {
+        yPercent: 12,
+        ease: "none",
+        scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
+      });
+      gsap.to(".hero-headline", {
+        y: -60,
+        autoAlpha: 0.3,
+        ease: "none",
+        scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
       });
     },
     { scope: root },
   );
 
   return (
-    <section ref={root} className="mx-auto w-full max-w-[1240px] px-5 pt-2 md:px-8">
-      <div className="relative min-h-[78vh] overflow-hidden rounded-[32px] bg-[#102018]">
-        <Image
-          src="/event-photos/Group Photo/Copy of Copy of Group Photo.JPG"
-          alt="OneThrive team with the people they just hosted"
-          fill
-          priority
-          className="hero-photo object-cover object-[center_30%]"
-          sizes="(min-width: 1240px) 1200px, 100vw"
-        />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,20,13,0.55)_0%,rgba(7,20,13,0.08)_34%,rgba(7,20,13,0.12)_58%,rgba(7,20,13,0.88)_100%)]" />
+    <section ref={root} aria-label="Intro" className="px-2 pt-2 md:px-3 md:pt-3">
+      <div className="relative h-[100svh] max-h-[980px] min-h-[640px] overflow-hidden rounded-[28px] bg-ink md:rounded-[36px]">
+        {/* Photo layer (no z-index so the squiggle can pass over it) */}
+        <div className="hero-parallax absolute inset-x-0 -top-[14%] bottom-0">
+          <div className="hero-intro absolute inset-0">
+            {heroSlides.map((slide, index) => (
+              <div
+                key={slide.src}
+                className="hero-slide absolute inset-0"
+                style={{ opacity: index === 0 ? 1 : 0 }}
+                aria-hidden={index === 0 ? undefined : true}
+              >
+                <div className="hero-kb absolute inset-0">
+                  <Image
+                    src={slide.src}
+                    alt={index === 0 ? slide.alt : ""}
+                    fill
+                    preload={index === 0}
+                    sizes="100vw"
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <div className="absolute top-6 right-6 flex gap-8 text-white md:top-8 md:right-10">
+        {/* Legibility overlays */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-2/5 bg-gradient-to-b from-ink/70 via-ink/25 to-transparent" />
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-ink/85 via-ink/35 to-transparent" />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{ background: "radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(21,23,23,0.55) 100%)" }}
+        />
+
+        {/* Stats */}
+        <dl className="absolute right-6 top-28 z-20 flex flex-col items-end gap-4 text-cream md:right-12 md:top-32 md:gap-6">
           {stats.map((stat) => (
-            <div key={stat.label} className="hero-stat text-right">
-              <p data-count className="font-display text-4xl leading-none drop-shadow-[0_2px_10px_rgba(0,0,0,0.45)] md:text-5xl">
-                {stat.value.toLocaleString("en-IN")}
-                {stat.suffix}
-              </p>
-              <p className="mt-1 text-xs tracking-wide text-white/80 md:text-sm">{stat.label}</p>
+            <div key={stat.label} className="hero-stat flex items-baseline gap-3">
+              <dt className="order-2 max-w-28 text-xs leading-snug text-cream/80 md:text-sm">{stat.label}</dt>
+              <dd className="order-1 font-display text-[clamp(2.6rem,5vw,4.5rem)] font-medium leading-none tracking-tight tabular-nums">
+                <span data-count={stat.value}>{stat.value.toLocaleString("en-IN")}</span>
+                <span className="ml-1 font-light text-mint">{stat.suffix}</span>
+              </dd>
             </div>
+          ))}
+        </dl>
+
+        {/* Headline */}
+        <h1 className="hero-headline absolute bottom-10 left-6 right-6 z-20 font-display text-[clamp(2.5rem,6.2vw,5.75rem)] leading-[0.98] tracking-tight text-cream md:bottom-16 md:left-12 md:right-auto">
+          <span className="block overflow-hidden pb-[0.08em]">
+            <span className="hero-line block font-light">Teams That Connect.</span>
+          </span>
+          <span className="block overflow-hidden pb-[0.08em] md:pl-[10%]">
+            <span className="hero-line block font-light">
+              Workplaces That <span className="font-semibold">Thrive.</span>
+            </span>
+          </span>
+        </h1>
+
+        {/* Slide progress */}
+        <div aria-hidden className="hero-meta absolute bottom-16 right-24 z-20 hidden gap-2 lg:flex">
+          {heroSlides.map((slide) => (
+            <span key={slide.src} className="h-0.5 w-8 overflow-hidden rounded-full bg-cream/25">
+              <span className="hero-bar block h-full w-full origin-left bg-mint" />
+            </span>
           ))}
         </div>
 
-        <div className="absolute right-6 bottom-6 left-6 md:right-10 md:bottom-10 md:left-10">
-          <h1 className="max-w-4xl text-white">
-            <span className="hero-line font-display block text-[1.7rem] leading-[1.05] font-semibold tracking-tight drop-shadow-[0_2px_16px_rgba(0,0,0,0.55)] sm:text-[2.2rem] md:text-[clamp(2rem,3.5vw,3.35rem)] md:whitespace-nowrap">
-              Teams That Connect.
-            </span>
-            <span className="hero-line font-display mt-1 block text-[1.7rem] leading-[1.05] font-semibold tracking-tight drop-shadow-[0_2px_16px_rgba(0,0,0,0.55)] sm:text-[2.2rem] md:text-[clamp(2rem,3.5vw,3.35rem)] md:whitespace-nowrap">
-              Workplaces That Thrive.
-            </span>
-          </h1>
-        </div>
-
-        <a
-          href="#about"
-          className="hero-scroll absolute top-1/2 right-5 z-10 hidden size-12 -translate-y-1/2 place-items-center rounded-full bg-white/15 text-white backdrop-blur-md md:right-8 md:grid"
-          aria-label="Scroll to the next section"
+        {/* Scroll cue */}
+        <div
+          aria-hidden
+          className="hero-meta absolute bottom-3 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
         >
-          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
-            <path d="M9 3v12M4 10l5 5 5-5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-          </svg>
-        </a>
+          <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-cream/70">Scroll</span>
+          <span className="relative block h-6 w-px overflow-hidden bg-cream/20">
+            <span className="hero-cue absolute inset-0 bg-mint" />
+          </span>
+        </div>
       </div>
+      <style>{`
+        @keyframes hero-cue { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(100%); } }
+        .hero-cue { animation: hero-cue 2s cubic-bezier(0.16,1,0.3,1) infinite; }
+        @media (prefers-reduced-motion: reduce) { .hero-cue { animation: none; } }
+      `}</style>
     </section>
   );
 }

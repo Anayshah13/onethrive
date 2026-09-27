@@ -1,27 +1,38 @@
-import type { Metadata } from "next";
-import { Bricolage_Grotesque, Outfit } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Instrument_Serif, Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
-const outfit = Outfit({
-  variable: "--font-outfit",
+const heading = Outfit({
+  variable: "--font-heading",
   subsets: ["latin"],
 });
 
-const display = Bricolage_Grotesque({
-  variable: "--font-display-family",
+const body = Plus_Jakarta_Sans({
+  variable: "--font-body",
   subsets: ["latin"],
+});
+
+const accent = Instrument_Serif({
+  variable: "--font-accent",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
-  title: "OneThrive — Teams that connect",
+  title: "OneThrive — Teams That Connect. Workplaces That Thrive.",
   description:
-    "OneThrive designs employee engagement, from a one-hour session to a multi-day offsite, shaped around your team.",
+    "OneThrive designs offsites, team building, wellness and corporate events shaped around your team's context, goals and dynamics.",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#f4fffb",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${outfit.variable} ${display.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[#f4fbf7] font-sans text-[#122018]">{children}</body>
+    <html lang="en" className={`${heading.variable} ${body.variable} ${accent.variable} antialiased`}>
+      <body className="min-h-dvh bg-cream font-sans text-ink">{children}</body>
     </html>
   );
 }

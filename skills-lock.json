@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "brandkit": {
+      "source": "Leonxlnx/taste-skill",
+      "sourceType": "github",
+      "skillPath": "skills/brandkit/SKILL.md",
+      "computedHash": "735007879f5110aeae1e981a53fe74a12afde70347f9773dacd50e4697a091bf"
+    },
+    "high-end-visual-design": {
+      "source": "aiskillstore/marketplace",
+      "sourceType": "github",
+      "skillPath": "skills/leonxlnx/high-end-visual-design/SKILL.md",
+      "computedHash": "bff710ef047a646a497c97d2e4b5c2576326ca678b4b985d9b857aa4f87ccac5"
+    }
+  }
+}
