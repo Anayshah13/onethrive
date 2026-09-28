@@ -492,6 +492,7 @@ export function Offer() {
         start="top 75%"
         end="bottom 70%"
         curve={offerCurve}
+        showHead={false}
       />
       <ShapeDefs />
 

@@ -24,25 +24,26 @@ function fromPoints(points: readonly Point[]): Curve {
 }
 
 /* Hero: enters mid-left, rises over the crowd, ties a small curl low in the centre, exits right. */
+/* Y values shifted +0.3 to position the line 30% lower in the hero frame. */
 export const heroCurve = fromPoints([
-  [-0.05, 0.3], [0.08, 0.35], [0.2, 0.44], [0.34, 0.42], [0.44, 0.34], [0.56, 0.31],
-  [0.62, 0.39], [0.56, 0.49], [0.5, 0.56], [0.52, 0.62], [0.575, 0.61], [0.565, 0.57],
-  [0.53, 0.59], [0.55, 0.64], [0.66, 0.67], [0.8, 0.65], [0.92, 0.58], [1.05, 0.62],
+  [-0.05, 0.6], [0.08, 0.65], [0.2, 0.74], [0.34, 0.72], [0.44, 0.64], [0.56, 0.61],
+  [0.62, 0.69], [0.56, 0.79], [0.5, 0.86], [0.52, 0.92], [0.575, 0.91], [0.565, 0.87],
+  [0.53, 0.89], [0.55, 0.94], [0.66, 0.97], [0.8, 0.95], [0.92, 0.88], [1.05, 0.92],
 ]);
 
 export const heroCurveMobile = fromPoints([
-  [-0.1, 0.24], [0.35, 0.34], [0.75, 0.29], [0.9, 0.4], [0.6, 0.48], [0.45, 0.54],
-  [0.5, 0.6], [0.64, 0.59], [0.6, 0.54], [0.5, 0.57], [0.66, 0.62], [1.1, 0.6],
+  [-0.1, 0.54], [0.35, 0.64], [0.75, 0.59], [0.9, 0.70], [0.6, 0.78], [0.45, 0.84],
+  [0.5, 0.90], [0.64, 0.89], [0.6, 0.84], [0.5, 0.87], [0.66, 0.92], [1.1, 0.90],
 ]);
 
-/* Promise: a gentle wave that hugs the section's bottom padding and lifts out to the right. */
+/* Promise: enters low-left, arcs through the bottom third, and rises gracefully toward the right. */
 export const promiseCurve = fromPoints([
-  [-0.05, 0.84], [0.18, 0.9], [0.38, 0.95], [0.6, 0.93], [0.8, 0.87], [0.93, 0.78], [1.06, 0.72],
+  [-0.05, 0.88], [0.1, 0.93], [0.28, 0.97], [0.46, 0.95], [0.62, 0.88], [0.76, 0.8], [0.9, 0.72], [1.06, 0.62],
 ]);
 
-/* Offer: sweeps right across the top, swings back and exits low on the left. */
+/* Offer: dives in from upper-left, traces a broad S across the section, exits lower-left. */
 export const offerCurve = fromPoints([
-  [-0.05, 0.22], [0.1, 0.18], [0.3, 0.34], [0.55, 0.28], [0.82, 0.44], [0.62, 0.62], [0.3, 0.7], [0.08, 0.82], [-0.06, 0.96],
+  [-0.05, 0.14], [0.14, 0.1], [0.36, 0.22], [0.52, 0.38], [0.72, 0.24], [0.9, 0.44], [0.76, 0.62], [0.5, 0.72], [0.22, 0.84], [-0.05, 0.95],
 ]);
 
 /* Closing CTA: hugs the lower edge so it never crosses the headline or the button. */

@@ -1,6 +1,7 @@
 "use client";
 
 import { ClosingCta } from "./closing-cta";
+import { ContactPopup } from "./contact-popup";
 import { Crew } from "./crew";
 import { Destinations } from "./destinations";
 import { Faqs } from "./faqs";
@@ -35,6 +36,7 @@ export function HomePage() {
       </div>
       <ContactFab />
       <TalkDrawer />
+      <ContactPopup />
       <div className="grain" aria-hidden />
     </TalkProvider>
   );

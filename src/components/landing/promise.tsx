@@ -74,7 +74,7 @@ export function PromiseSection() {
     <section ref={root} id="promise" className="relative isolate py-32 md:py-52 lg:py-60">
       <Glow className="-z-10 top-16 right-[8%] size-[26rem]" />
       <Glow tone="soft" className="-z-10 bottom-0 -left-24 size-[30rem]" />
-      <FlowLine curve={promiseCurve} start="top 70%" end="bottom 60%" className="z-10" />
+      <FlowLine curve={promiseCurve} start="top 70%" end="bottom 60%" showHead={false} className="z-10" />
       <PixelCluster cols={16} rows={7} seed={3} className="absolute left-0 top-10 md:left-6" />
       <PixelCluster cols={12} rows={8} seed={7} className="absolute bottom-24 right-4 hidden md:block" />
       <PixelCluster cols={8} rows={6} seed={23} cell={14} className="absolute top-24 left-[52%] hidden lg:block" />

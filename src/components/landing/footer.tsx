@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { contact } from "@/data/content";
 import { PixelCluster } from "./decor";
@@ -17,7 +18,11 @@ const QUICK_LINKS = [
   { label: "FAQs", href: "#faqs" },
 ] as const;
 
-const POLICIES = ["Privacy Policy", "Cancellation & Refund", "Terms & Conditions"] as const;
+const POLICIES = [
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Cancellation & Refund", href: "/cancellation-refund" },
+  { label: "Terms & Conditions", href: "/terms-conditions" },
+] as const;
 
 /* TODO: real Instagram / LinkedIn / YouTube URLs */
 const SOCIALS = [
@@ -135,12 +140,11 @@ export function Footer() {
           <div>
             <p className="ot-label">Policies</p>
             <ul className="mt-3 flex flex-wrap gap-2">
-              {POLICIES.map((label) => (
-                <li key={label}>
-                  {/* TODO: link to real policy page */}
-                  <a href="#" className={pillClass}>
+              {POLICIES.map(({ label, href }) => (
+                <li key={href}>
+                  <Link href={href} className={pillClass}>
                     {label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

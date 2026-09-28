@@ -42,6 +42,7 @@ export function FlowLine({
   end = "bottom 55%",
   intro = 0,
   introDelay = 0.5,
+  showHead = true,
   className = "",
 }: {
   curve: Curve;
@@ -51,6 +52,7 @@ export function FlowLine({
   /** Fraction of the line drawn on load, before any scrolling. */
   intro?: number;
   introDelay?: number;
+  showHead?: boolean;
   className?: string;
 }) {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -93,10 +95,12 @@ export function FlowLine({
       const render = () => {
         const progress = Math.min(1, state.intro * intro + (1 - intro) * state.scroll);
         path.style.strokeDashoffset = `${length * (1 - progress)}`;
-        const tip = path.getPointAtLength(length * progress);
-        head.setAttribute("cx", `${tip.x}`);
-        head.setAttribute("cy", `${tip.y}`);
-        head.style.opacity = progress > 0.004 && progress < 0.996 ? "1" : "0";
+        if (showHead) {
+          const tip = path.getPointAtLength(length * progress);
+          head.setAttribute("cx", `${tip.x}`);
+          head.setAttribute("cy", `${tip.y}`);
+          head.style.opacity = progress > 0.004 && progress < 0.996 ? "1" : "0";
+        }
       };
       render();
 
