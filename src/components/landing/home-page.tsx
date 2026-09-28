@@ -1,11 +1,13 @@
 "use client";
 
 import { ClosingCta } from "./closing-cta";
+import { Crew } from "./crew";
 import { Destinations } from "./destinations";
 import { Faqs } from "./faqs";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { Hero } from "./hero";
+import { Moments } from "./moments";
 import { Offer } from "./offer";
 import { PromiseSection } from "./promise";
 import { SmoothScroll } from "./smooth-scroll";
@@ -25,6 +27,8 @@ export function HomePage() {
           <Destinations />
           <Testimonials />
           <Faqs />
+          <Moments />
+          <Crew />
           <ClosingCta />
         </main>
         <Footer />

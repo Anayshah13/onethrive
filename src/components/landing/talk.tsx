@@ -49,20 +49,30 @@ export function TalkButton({
 export function ContactFab() {
   const { open, setOpen } = useTalk();
   return (
-    <motion.button
-      type="button"
-      onClick={() => setOpen(true)}
-      aria-label="Write to OneThrive"
-      initial={{ scale: 0, opacity: 0 }}
-      animate={{ scale: open ? 0.6 : 1, opacity: open ? 0 : 1 }}
-      transition={{ delay: open ? 0 : 1.4, type: "spring", stiffness: 260, damping: 22 }}
-      className="group fixed right-4 bottom-4 z-40 grid size-14 cursor-pointer place-items-center rounded-full bg-ink text-cream shadow-[0_18px_40px_-12px_rgba(34,36,36,0.6)] ring-1 ring-white/10 transition-transform duration-500 ease-spring hover:scale-105 md:right-8 md:bottom-8 md:size-16"
+    <motion.div
+      initial={{ y: 24, opacity: 0 }}
+      animate={{ y: open ? 12 : 0, opacity: open ? 0 : 1 }}
+      transition={{ delay: open ? 0 : 1.4, type: "spring", stiffness: 240, damping: 24 }}
+      className={`fixed right-4 bottom-4 z-40 md:right-8 md:bottom-8 ${open ? "pointer-events-none" : ""}`}
     >
-      <span className="absolute top-0.5 right-0.5 size-3.5 rounded-full bg-mint ring-2 ring-ink">
-        <span className="pulse-ring absolute inset-0 rounded-full bg-mint" />
-      </span>
-      <Mail className="size-6 transition-transform duration-500 ease-spring group-hover:-rotate-12" />
-    </motion.button>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label="Plan your offsite with OneThrive"
+        className="group flex cursor-pointer items-center gap-3 rounded-full bg-white/60 p-1.5 shadow-[0_20px_44px_-16px_rgba(21,23,23,0.45)] ring-1 ring-ink/10 backdrop-blur-xl transition-transform duration-500 ease-spring hover:-translate-y-0.5 active:scale-[0.97]"
+      >
+        <span className="flex items-center gap-3 rounded-full bg-ink py-1.5 pr-1.5 pl-1.5 text-cream sm:pl-5">
+          <span className="hidden flex-col items-start leading-none sm:flex">
+            <span className="text-[10px] font-medium tracking-[0.2em] text-mint/80 uppercase">Say hello</span>
+            <span className="mt-1 font-display text-[15px] font-medium tracking-tight">Plan your offsite</span>
+          </span>
+          <span className="relative grid size-11 place-items-center rounded-full bg-mint text-ink transition-transform duration-500 ease-spring group-hover:rotate-[-8deg] group-hover:scale-105 md:size-12">
+            <span aria-hidden className="pulse-ring absolute inset-0 rounded-full bg-mint" />
+            <Mail className="relative size-5" />
+          </span>
+        </span>
+      </button>
+    </motion.div>
   );
 }
 

@@ -94,15 +94,18 @@ export function Hero() {
         }
       }
 
-      /* On scroll the screen keeps tipping toward the viewer: its lower edge swings out of the monitor */
-      gsap.to(".hero-tilt", {
-        rotateX: 16,
-        scale: 0.92,
-        transformPerspective: 1600,
-        transformOrigin: "50% 0%",
-        ease: "none",
-        scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
-      });
+      /* At rest the screen is flat. On scroll it hinges on its bottom edge and its top falls
+         forward, toward the viewer and out of the frame. */
+      gsap.fromTo(
+        ".hero-tilt",
+        { rotateX: 0, transformPerspective: 1400, transformOrigin: "50% 100%" },
+        {
+          rotateX: -42,
+          yPercent: 6,
+          ease: "power1.in",
+          scrollTrigger: { trigger: el, start: "top top", end: "bottom top", scrub: true },
+        },
+      );
 
       /* Scroll parallax (only on the image layer and the z-20 headline itself) */
       gsap.to(".hero-parallax", {
@@ -121,7 +124,7 @@ export function Hero() {
   );
 
   return (
-    <section ref={root} aria-label="Intro" className="px-2 pt-2 md:px-3 md:pt-3">
+    <section ref={root} aria-label="Intro" className="relative z-10 px-2 pt-2 md:px-3 md:pt-3">
       <div className="hero-tilt will-change-transform">
       <div className="hero-screen relative h-[100svh] max-h-[980px] min-h-[640px] overflow-hidden rounded-[28px] bg-ink md:rounded-[36px]">
         {/* Photo layer (no z-index so the squiggle can pass over it) */}

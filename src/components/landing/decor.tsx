@@ -64,7 +64,7 @@ export function FlowLine({
       const w = host.offsetWidth;
       const h = host.offsetHeight;
       const d = pathFor(w < 768 && mobileCurve ? mobileCurve : curve, w, h);
-      const stroke = Math.round(Math.min(46, Math.max(20, w * 0.03)));
+      const stroke = Math.round(Math.min(34, Math.max(16, w * 0.022)));
       setGeo((prev) => (prev && prev.d === d ? prev : { w, h, d, stroke }));
     };
     measure();
@@ -137,9 +137,9 @@ export function FlowLine({
               r={Math.hypot(geo.w, geo.h) / 2}
             >
               <stop offset="0" stopColor="#fff" stopOpacity="1" />
-              <stop offset="0.35" stopColor="#fff" stopOpacity="0.92" />
-              <stop offset="0.75" stopColor="#fff" stopOpacity="0.4" />
-              <stop offset="1" stopColor="#fff" stopOpacity="0.08" />
+              <stop offset="0.45" stopColor="#fff" stopOpacity="1" />
+              <stop offset="0.8" stopColor="#fff" stopOpacity="0.6" />
+              <stop offset="1" stopColor="#fff" stopOpacity="0.2" />
             </radialGradient>
             <mask id={`${maskId}-m`} maskUnits="userSpaceOnUse" x={-geo.w} y={-geo.h} width={geo.w * 3} height={geo.h * 3}>
               <rect x={-geo.w} y={-geo.h} width={geo.w * 3} height={geo.h * 3} fill={`url(#${maskId}-g)`} />
@@ -164,10 +164,13 @@ export function FlowLine({
   );
 }
 
-/* Deterministic pseudo-random so server and client render the same pixels. */
+/* Deterministic pseudo-random (integer hash) so server and client render identical pixels;
+   Math.sin-based noise can differ in the last bits between Node and the browser. */
 function rand(seed: number) {
-  const x = Math.sin(seed * 9301 + 49297) * 233280;
-  return x - Math.floor(x);
+  let t = Math.imul(seed | 0, 0x9e3779b1);
+  t = Math.imul(t ^ (t >>> 15), 0x2c1b3c6d);
+  t = Math.imul(t ^ (t >>> 12), 0x297a2d39);
+  return ((t ^ (t >>> 15)) >>> 0) / 4294967296;
 }
 
 const PIXEL_TONES = ["var(--mint-soft)", "#b2f0d5", "#d2f7e7", "#8fe9c3"];
@@ -189,6 +192,12 @@ export function PixelCluster({
   cell?: number;
   className?: string;
 }) {
+  /* Chunky squares: blow each cell up while shrinking the grid, so the cloud keeps
+     roughly the footprint that `cols * cell` by `rows * cell` describes. */
+  const scale = 2;
+  cell *= scale;
+  cols = Math.max(3, Math.round(cols / scale));
+  rows = Math.max(3, Math.round(rows / scale));
   const squares: Array<{ x: number; y: number; o: number; t: boolean; d: number; c: string }> = [];
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
@@ -201,9 +210,9 @@ export function PixelCluster({
         squares.push({
           x: c * cell,
           y: r * cell,
-          o: 0.45 + falloff * 0.55 * rand(seed + r * 7 + c * 13),
+          o: Math.round((0.45 + falloff * 0.55 * rand(seed + r * 7 + c * 13)) * 100) / 100,
           t: n < 0.2,
-          d: 3 + rand(seed + c) * 5,
+          d: Math.round((3 + rand(seed + c) * 5) * 10) / 10,
           c: PIXEL_TONES[Math.floor(tone * PIXEL_TONES.length)],
         });
       }

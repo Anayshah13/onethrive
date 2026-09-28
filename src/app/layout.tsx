@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif, Outfit, Plus_Jakarta_Sans } from "next/font/google";
+import { Bricolage_Grotesque, Instrument_Serif, Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 
 const heading = Outfit({
@@ -19,6 +19,12 @@ const accent = Instrument_Serif({
   style: ["normal", "italic"],
 });
 
+const offerFace = Bricolage_Grotesque({
+  variable: "--font-bricolage",
+  subsets: ["latin"],
+  axes: ["opsz", "wdth"],
+});
+
 export const metadata: Metadata = {
   title: "OneThrive — Teams That Connect. Workplaces That Thrive.",
   description:
@@ -31,7 +37,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${heading.variable} ${body.variable} ${accent.variable} antialiased`}>
+    <html lang="en" className={`${heading.variable} ${body.variable} ${accent.variable} ${offerFace.variable} antialiased`}>
       <body className="min-h-dvh bg-cream font-sans text-ink">{children}</body>
     </html>
   );

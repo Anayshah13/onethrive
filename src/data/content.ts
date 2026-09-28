@@ -4,6 +4,8 @@ export const nav = [
   { label: "Destinations", href: "#destinations" },
   { label: "Testimonials", href: "#testimonials" },
   { label: "FAQs", href: "#faqs" },
+  { label: "Moments", href: "#moments" },
+  { label: "Crew", href: "#crew" },
 ] as const;
 
 export const contact = {
@@ -90,31 +92,37 @@ export const clients = [
 export const offers = [
   {
     title: "Offsite & MICE",
+    kicker: "Retreats · Conferences",
     image: "/photos/offsite-group.jpg",
     blurb: "Multi-day retreats and conferences shaped around how your team actually works.",
   },
   {
     title: "Team Building",
+    kicker: "Games · Challenges",
     image: "/photos/balloon-build.jpg",
     blurb: "Games and challenges that get a room moving in the same direction.",
   },
   {
     title: "Artist Booking",
+    kicker: "Comics · Music · Hosts",
     image: "/photos/stage-artist.jpg",
     blurb: "Comics, musicians and hosts, booked and run so the night lands.",
   },
   {
     title: "Day Outing",
+    kicker: "Beach · Park · City",
     image: "/photos/beach-games.jpg",
     blurb: "A single day, fully hosted, from the first icebreaker to the last photo.",
   },
   {
     title: "Event Production",
+    kicker: "Stage · Sound · Show",
     image: "/photos/event-production.jpg",
     blurb: "Foundation days, carnivals and celebrations, produced end to end.",
   },
   {
     title: "Wellness",
+    kicker: "Yoga · Breath · Sound",
     image: "/photos/desk-yoga.jpg",
     blurb: "Desk yoga, laughter yoga, sound and breath: sessions people feel the next morning.",
   },
@@ -376,6 +384,86 @@ export const gallery = [
   { src: "/photos/net-lift.jpg", alt: "Team carrying a colleague in a cargo net" },
   { src: "/photos/caricature.jpg", alt: "Guest holding a live caricature" },
 ] as const;
+
+export const momentCategories = [
+  "Foundation Day",
+  "Carnival",
+  "Team Building",
+  "Wellness",
+  "Festive & Craft",
+  "Offsites & Sports",
+  "Virtual",
+] as const;
+
+export type MomentCategory = (typeof momentCategories)[number];
+
+/* Tile shape in the bento grid: tall spans two rows, wide spans two columns. */
+export type MomentShape = "tall" | "wide" | "square";
+
+/* Photos from past events. The `featured` ones make up the curated "All" view. */
+export const moments: Array<{
+  src: string;
+  alt: string;
+  category: MomentCategory;
+  shape: MomentShape;
+  featured?: boolean;
+}> = [
+  // Foundation Day
+  { src: "/photos/foundation-group.jpg", alt: "The Happi Planet team gathered on stage beside a giant illuminated 5 at their fifth Foundation Day", category: "Foundation Day", shape: "wide", featured: true },
+  { src: "/event-photos/Foundation Day/Copy of Copy of 1E4A7384.JPG", alt: "Two-tier Happi Planet anniversary cake topped with gold spheres and a number 5 candle", category: "Foundation Day", shape: "tall", featured: true },
+  { src: "/event-photos/Foundation Day/Copy of Copy of 1E4A7268.JPG", alt: "Two colleagues at a dinner table doubled over laughing during a comedy set", category: "Foundation Day", shape: "wide", featured: true },
+  { src: "/event-photos/Foundation Day/Copy of Copy of 1E4A7261.JPG", alt: "Stand-up comedian performing in front of the Happi Planet 5th Foundation Day backdrop", category: "Foundation Day", shape: "square" },
+  { src: "/event-photos/Foundation Day/Copy of Copy of 1E4A7313.JPG", alt: "Musician with an acoustic guitar singing on the Foundation Day stage", category: "Foundation Day", shape: "tall" },
+  { src: "/event-photos/Foundation Day/Copy of Copy of 1E4A7411.JPG", alt: "Colleagues crowding around the table and cheering as the Foundation Day cake is cut", category: "Foundation Day", shape: "wide" },
+  { src: "/event-photos/Foundation Day/Copy of Copy of 1E4A7508.JPG", alt: "Guests throwing their hands up on the dance floor at the Foundation Day after-party", category: "Foundation Day", shape: "square" },
+
+  // Carnival
+  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7342.JPG", alt: "Guest swinging a mallet at a high-striker strength game at an indoor carnival", category: "Carnival", shape: "wide", featured: true },
+  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7185.JPG", alt: "Smiling guest showing off red and white face paint", category: "Carnival", shape: "tall", featured: true },
+  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7164.JPG", alt: "Grinning guest mid-throw at a carnival game stall under bright hanging lights", category: "Carnival", shape: "wide" },
+  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7341.JPG", alt: "Guest holding up her freshly drawn live caricature", category: "Carnival", shape: "tall" },
+  { src: "/photos/cotton-candy.jpg", alt: "Two colleagues biting into pink cotton candy", category: "Carnival", shape: "tall" },
+  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7536.JPG", alt: "Printed photo-booth strips laid out on a table for guests to collect", category: "Carnival", shape: "wide" },
+
+  // Team Building
+  { src: "/photos/net-lift-2.jpg", alt: "Teammates carrying a colleague across the turf in a green cargo net", category: "Team Building", shape: "tall", featured: true },
+  { src: "/event-photos/Team Building/Copy of IMG_9784.JPG", alt: "Colleagues holding up balloons under a festive canopy at an outdoor team day", category: "Team Building", shape: "wide", featured: true },
+  { src: "/event-photos/Team Building/Copy of IMG_1939.PNG", alt: "Team leaning back and hauling on the rope in an outdoor tug of war", category: "Team Building", shape: "square" },
+  { src: "/photos/cup-game.jpg", alt: "Two teammates tilting their heads back to balance a red cup in a relay game", category: "Team Building", shape: "tall" },
+  { src: "/event-photos/Team Building/Copy of IMG_7912.PNG", alt: "Team huddled over a pile of green balloons, racing to finish a balloon build", category: "Team Building", shape: "tall" },
+  { src: "/event-photos/Team Building/IMG_1970.PNG", alt: "Players bent over a table, racing to blow letter tiles into place in an office word game", category: "Team Building", shape: "square" },
+  { src: "/event-photos/Team Building/Copy of Copy of Team 1 Group Photo.JPG", alt: "Team posing with the newspaper tower they built during a build challenge", category: "Team Building", shape: "tall" },
+
+  // Wellness
+  { src: "/event-photos/Wellness/Laughter Yoga/Copy of IMG_7917.PNG", alt: "Colleagues throwing their arms wide and bursting out laughing during a laughter yoga session", category: "Wellness", shape: "tall", featured: true },
+  { src: "/event-photos/Wellness/Copy of 1db73692-5982-4444-9bc5-99d083fff72f.jpg", alt: "Employees at their desks with hands on their chests during a guided breathing session", category: "Wellness", shape: "tall", featured: true },
+  { src: "/event-photos/Wellness/Laughter Yoga/Copy of IMG_7922.PNG", alt: "Team members in their office chairs cracking up mid laughter yoga exercise", category: "Wellness", shape: "tall" },
+  { src: "/event-photos/Wellness/Copy of IMG_7940.PNG", alt: "Employees stretching their arms overhead from their office chairs", category: "Wellness", shape: "tall" },
+  { src: "/event-photos/Wellness/Meditation/Copy of IMG_0073.PNG", alt: "Woman in a white kurta meditating with her eyes closed at her desk", category: "Wellness", shape: "tall" },
+  { src: "/event-photos/Wellness/Meditation/Copy of IMG_7938.PNG", alt: "Group palming their eyes together during a desk meditation break", category: "Wellness", shape: "tall" },
+
+  // Festive & Craft
+  { src: "/photos/navratri-dance.jpg", alt: "Colleagues in chaniya cholis and kurtas dancing garba across the office floor for Navratri", category: "Festive & Craft", shape: "wide", featured: true },
+  { src: "/event-photos/Creative Workshop/Pottery/Copy of IMG_8981.PNG", alt: "Smiling participant holding up a clay diya at a pottery workshop", category: "Festive & Craft", shape: "tall", featured: true },
+  { src: "/event-photos/Festive Celebration/Navratri/Copy of Mirror Decoration(1).JPG", alt: "Colleague decorating a dandiya stick with ribbons and mirror work at her desk", category: "Festive & Craft", shape: "tall" },
+  { src: "/event-photos/Festive Celebration/Navratri/Copy of IMG_20251001_165001284_HDR.jpg", alt: "Colleagues wrapping dandiya sticks in coloured ribbon ahead of Navratri", category: "Festive & Craft", shape: "tall" },
+  { src: "/event-photos/Creative Workshop/Big Picture/Copy of IMG_5062.JPG", alt: "Participant painting a canvas at an art workshop", category: "Festive & Craft", shape: "tall" },
+  { src: "/photos/tote-line.jpg", alt: "Workshop participants lined up outdoors holding the tote bags they hand-painted", category: "Festive & Craft", shape: "wide" },
+
+  // Offsites & Sports
+  { src: "/photos/beach-dusk.jpg", alt: "Team in orange and yellow bibs holding a Happi Planet banner on the beach at dusk", category: "Offsites & Sports", shape: "tall", featured: true },
+  { src: "/photos/beach-cricket.jpg", alt: "Colleagues playing a game of cricket on the beach", category: "Offsites & Sports", shape: "wide", featured: true },
+  { src: "/photos/cricket-bat.jpg", alt: "Batter mid-swing in a box cricket match under the nets", category: "Offsites & Sports", shape: "tall" },
+  { src: "/photos/beach-sand.jpg", alt: "Happi Planet written in the sand at the water's edge", category: "Offsites & Sports", shape: "tall" },
+  { src: "/photos/offsite-talk.jpg", alt: "Speaker presenting to the team during an offsite session", category: "Offsites & Sports", shape: "tall" },
+  { src: "/event-photos/Team Building/Copy of IMG_1907.PNG", alt: "Colleagues gathered on an artificial turf ground under the nets before a sports-day game", category: "Offsites & Sports", shape: "tall" },
+
+  // Virtual
+  { src: "/event-photos/Virtual/Copy of IMG_010.png", alt: "Video call grid of remote employees raising their arms during a virtual yoga session", category: "Virtual", shape: "wide", featured: true },
+  { src: "/event-photos/Virtual/Copy of IMG_023.png", alt: "Instructor in a OneThrive tee leading a virtual session while the team follows on camera", category: "Virtual", shape: "wide" },
+  { src: "/event-photos/Virtual/Copy of IMG_029.png", alt: "Remote team members gesturing along with the host on a video call", category: "Virtual", shape: "wide" },
+  { src: "/event-photos/Virtual/Copy of IMG_038.png", alt: "Host with hands folded in namaste closing a virtual wellness session", category: "Virtual", shape: "wide" },
+];
 
 export const faqs = [
   {

@@ -71,26 +71,26 @@ export function PromiseSection() {
   );
 
   return (
-    <section ref={root} id="promise" className="relative isolate py-28 md:py-40">
+    <section ref={root} id="promise" className="relative isolate py-32 md:py-52 lg:py-60">
       <Glow className="-z-10 top-16 right-[8%] size-[26rem]" />
       <Glow tone="soft" className="-z-10 bottom-0 -left-24 size-[30rem]" />
       <FlowLine curve={promiseCurve} start="top 70%" end="bottom 60%" className="z-10" />
       <PixelCluster cols={16} rows={7} seed={3} className="absolute left-0 top-10 md:left-6" />
       <PixelCluster cols={12} rows={8} seed={7} className="absolute bottom-24 right-4 hidden md:block" />
-      <PixelCluster cols={8} rows={6} seed={23} cell={14} className="absolute top-1/2 left-[46%] hidden lg:block" />
+      <PixelCluster cols={8} rows={6} seed={23} cell={14} className="absolute top-24 left-[52%] hidden lg:block" />
 
-      <div className="mx-auto grid w-full max-w-[1240px] items-end gap-16 px-5 md:grid-cols-[1.25fr_0.75fr] md:px-8">
+      <div className="mx-auto grid w-full max-w-[1320px] items-end gap-20 px-5 md:px-10 lg:grid-cols-[1.35fr_0.65fr] lg:gap-24">
         <div className="relative z-20">
           <span className="eyebrow">The OneThrive Promise</span>
-          <p className="promise-statement mt-8 max-w-[24ch] font-display text-[clamp(1.7rem,3.2vw,2.85rem)] font-light leading-[1.18] tracking-tight text-ink">
+          <p className="promise-statement mt-10 max-w-[22ch] font-display text-[clamp(2.1rem,4.4vw,4rem)] font-light leading-[1.12] tracking-tight text-ink">
             <Words text={aboutCopy} />
           </p>
-          <TextLink onClick={() => scrollToHash("#testimonials")} className="mt-8">
+          <TextLink onClick={() => scrollToHash("#testimonials")} className="mt-12">
             explore more client stories
           </TextLink>
         </div>
 
-        <Reveal stagger={0.12} className="relative z-20 flex min-w-0 flex-col gap-10">
+        <Reveal stagger={0.12} className="relative z-20 flex min-w-0 flex-col gap-12">
           <div className="w-fit max-w-full rounded-[2rem] bg-white/50 p-1.5 ring-1 ring-ink/5">
             <div className="flex items-center gap-4 rounded-[calc(2rem-0.375rem)] bg-white px-5 py-4 shadow-float">
               <div className="flex shrink-0 -space-x-3">

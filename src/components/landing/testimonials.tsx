@@ -8,17 +8,22 @@ import { EASE_OUT, gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { Glow, PixelCluster } from "./decor";
 import { ArrowLeft, ArrowRight, Star } from "./icons";
 import { Reveal } from "./reveal";
-import { scrollToHash } from "./smooth-scroll";
-import { TextLink } from "./ui";
 
 /* Cylinder geometry for the curved gallery, viewed from inside the cylinder. */
 const RADIUS = 640; // px, cylinder radius
 const STEP = 19; // deg between panels
 const PUSH_BACK = 220; // px the front panel sits behind the screen plane
-const ROT_FROM = 16; // deg, ring rotation at section start
-const ROT_TO = -24; // deg, ring rotation at section end
-const CENTER = (gallery.length - 1) / 2;
-const panelAngle = (i: number) => (CENTER - i) * STEP; // positive = left side, facing right
+const SPEED = 5; // deg per second the reel turns on its own
+/* Two copies of the photos so the reel is longer than the visible arc and can loop seamlessly. */
+const REEL = [...gallery, ...gallery];
+const SPAN = REEL.length * STEP;
+const CENTER = (REEL.length - 1) / 2;
+/* Panel angle after the reel has turned by `rot`, wrapped into [-SPAN/2, SPAN/2). Positive = left side. */
+const panelAngle = (i: number, rot = 0) => {
+  const a = (CENTER - i) * STEP + rot + SPAN / 2;
+  return Math.round((((a % SPAN) + SPAN) % SPAN - SPAN / 2) * 100) / 100;
+};
+const panelTransform = (angle: number) => `rotateY(${angle}deg) translateZ(-${RADIUS}px)`;
 
 const ringTransform = (rot: number) => `translateZ(${RADIUS - PUSH_BACK}px) rotateY(${rot}deg)`;
 const panelOpacity = (angle: number) => Math.max(0, Math.min(1, 1 - (Math.abs(angle) - 42) / 36));
@@ -56,24 +61,29 @@ export function Testimonials() {
         );
       });
 
-      /* Curved gallery: the ring turns so the panels glide sideways along the wall. */
+      /* Curved gallery: the reel turns on its own, independent of scrolling; hovering slows it. */
       const ring = section.querySelector<HTMLElement>("[data-ring]");
       const panels = gsap.utils.toArray<HTMLElement>("[data-panel]");
       if (!ring) return;
-      const state = { rot: ROT_FROM };
-      const render = () => {
-        ring.style.transform = ringTransform(state.rot);
+      const state = { rot: 0, speed: SPEED };
+      const tick = (_time: number, deltaMs: number) => {
+        state.rot -= (state.speed * Math.min(deltaMs, 64)) / 1000;
         panels.forEach((panel, i) => {
-          panel.style.opacity = `${panelOpacity(panelAngle(i) + state.rot)}`;
+          const angle = panelAngle(i, state.rot);
+          panel.style.transform = panelTransform(angle);
+          panel.style.opacity = `${panelOpacity(angle)}`;
         });
       };
-      render();
-      gsap.to(state, {
-        rot: ROT_TO,
-        ease: "none",
-        onUpdate: render,
-        scrollTrigger: { trigger: section, start: "top bottom", end: "bottom top", scrub: 1 },
-      });
+      gsap.ticker.add(tick);
+      const slow = () => gsap.to(state, { speed: SPEED * 0.2, duration: 0.8, ease: "power2.out" });
+      const resume = () => gsap.to(state, { speed: SPEED, duration: 0.8, ease: "power2.in" });
+      ring.addEventListener("pointerenter", slow);
+      ring.addEventListener("pointerleave", resume);
+      return () => {
+        gsap.ticker.remove(tick);
+        ring.removeEventListener("pointerenter", slow);
+        ring.removeEventListener("pointerleave", resume);
+      };
     },
     { scope: sectionRef },
   );
@@ -115,10 +125,6 @@ export function Testimonials() {
                 meetings. From team-building activities to wellness initiatives, we create moments that make the
                 team <strong className="font-semibold text-ink">one.</strong>
               </p>
-              {/* TODO: link to a testimonials page */}
-              <TextLink className="mt-5 min-h-11" onClick={() => scrollToHash("#testimonials")}>
-                explore all testimonials
-              </TextLink>
             </Reveal>
           </div>
         </div>
@@ -256,14 +262,14 @@ function CurvedGallery() {
         className="absolute inset-0 [transform-style:preserve-3d]"
         style={{ transform: ringTransform(0) }}
       >
-        {gallery.map((photo, i) => {
+        {REEL.map((photo, i) => {
           const angle = panelAngle(i);
           return (
             <div
-              key={photo.src}
+              key={`${i}-${photo.src}`}
               data-panel
               className="absolute top-1/2 left-1/2 -mt-[170px] -ml-[100px] h-[340px] w-[200px] overflow-hidden rounded-2xl ring-1 ring-white/10 [backface-visibility:hidden]"
-              style={{ transform: `rotateY(${angle}deg) translateZ(-${RADIUS}px)`, opacity: panelOpacity(angle) }}
+              style={{ transform: panelTransform(angle), opacity: panelOpacity(angle) }}
             >
               <Image src={photo.src} alt="" fill className="object-cover" sizes="220px" />
               <span className="absolute inset-0 bg-gradient-to-t from-ink/25 to-transparent" />
@@ -275,17 +281,18 @@ function CurvedGallery() {
   );
 }
 
-/* Below md: a contained horizontal snap scroller instead of the 3D wall. */
+/* Below md: a self-running strip of photos instead of the 3D wall. */
 function MobileGallery() {
   return (
-    <div className="-mx-5 snap-x snap-mandatory scroll-px-5 overflow-x-auto px-5 pb-2 [scrollbar-width:none] md:hidden">
-      <ul className="flex w-max gap-3">
-        {gallery.slice(0, 5).map((photo) => (
+    <div className="marquee-host marquee-mask -mx-5 overflow-hidden md:hidden">
+      <ul className="marquee flex w-max" style={{ "--marquee-duration": "38s" } as React.CSSProperties}>
+        {REEL.map((photo, i) => (
           <li
-            key={photo.src}
-            className="relative h-[300px] w-[190px] shrink-0 snap-center overflow-hidden rounded-2xl ring-1 ring-ink/5"
+            key={`${i}-${photo.src}`}
+            aria-hidden={i >= gallery.length ? true : undefined}
+            className="relative mr-3 h-[300px] w-[190px] shrink-0 overflow-hidden rounded-2xl ring-1 ring-ink/5"
           >
-            <Image src={photo.src} alt={photo.alt} fill className="object-cover" sizes="190px" />
+            <Image src={photo.src} alt={i >= gallery.length ? "" : photo.alt} fill className="object-cover" sizes="190px" />
           </li>
         ))}
       </ul>
