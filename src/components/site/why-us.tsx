@@ -85,7 +85,7 @@ export function WhyUs() {
             One brief. One crew. <span className="font-serif text-emerald italic">One day that lands.</span>
           </h2>
           <TalkButton className="mt-4" size="lg">
-            Plan your offsite
+            Plan your event
           </TalkButton>
         </Reveal>
       </section>

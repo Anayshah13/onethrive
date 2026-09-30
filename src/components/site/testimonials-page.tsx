@@ -40,7 +40,7 @@ export function TestimonialsPage() {
             Give your team a day <span className="font-serif text-mint italic">worth talking about.</span>
           </h2>
           <TalkButton className="mt-4" size="lg">
-            Plan your offsite
+            Plan your event
           </TalkButton>
         </Reveal>
       </section>

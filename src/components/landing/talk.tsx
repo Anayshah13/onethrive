@@ -28,7 +28,7 @@ export function useTalk() {
 
 export function TalkButton({
   className = "",
-  children = "Plan your offsite",
+  children = "Plan your event",
   variant = "mint",
   size = "md",
 }: {
@@ -58,13 +58,13 @@ export function ContactFab() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label="Plan your offsite with OneThrive"
-        className="group flex cursor-pointer items-center gap-3 rounded-full bg-white/60 p-1.5 shadow-[0_20px_44px_-16px_rgba(21,23,23,0.45)] ring-1 ring-ink/10 backdrop-blur-xl transition-transform duration-500 ease-spring hover:-translate-y-0.5 active:scale-[0.97]"
+        aria-label="Plan your event with OneThrive"
+        className="group flex cursor-pointer items-center gap-3 fab-gold rounded-full p-1.5 shadow-[0_20px_44px_-16px_rgba(21,23,23,0.45),0_0_18px_-6px_rgba(212,175,55,0.6)] ring-1 ring-[#8a6a1f]/40 transition-transform duration-500 ease-spring hover:-translate-y-0.5 active:scale-[0.97]"
       >
         <span className="flex items-center gap-3 rounded-full bg-ink py-1.5 pr-1.5 pl-1.5 text-cream sm:pl-5">
           <span className="hidden flex-col items-start leading-none sm:flex">
             <span className="text-[10px] font-medium tracking-[0.2em] text-mint/80 uppercase">Say hello</span>
-            <span className="mt-1 font-display text-[15px] font-medium tracking-tight">Plan your offsite</span>
+            <span className="mt-1 font-display text-[15px] font-medium tracking-tight">Plan your event</span>
           </span>
           <span className="relative grid size-11 place-items-center rounded-full bg-mint text-ink transition-transform duration-500 ease-spring group-hover:rotate-[-8deg] group-hover:scale-105 md:size-12">
             <span aria-hidden className="pulse-ring absolute inset-0 rounded-full bg-mint" />
@@ -72,6 +72,15 @@ export function ContactFab() {
           </span>
         </span>
       </button>
+      <style>{`
+        .fab-gold {
+          background: linear-gradient(120deg, #8a6a1f 0%, #d4af37 22%, #fff3c4 38%, #e6c35c 52%, #a67c2e 70%, #f5d77a 86%, #8a6a1f 100%);
+          background-size: 250% 100%;
+          animation: fab-gold 5s linear infinite;
+        }
+        @keyframes fab-gold { from { background-position: 0% 50%; } to { background-position: 166.667% 50%; } }
+        @media (prefers-reduced-motion: reduce) { .fab-gold { animation: none; } }
+      `}</style>
     </motion.div>
   );
 }

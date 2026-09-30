@@ -4,10 +4,10 @@ import Image from "next/image";
 import { useRef } from "react";
 import { heroSlides, stats } from "@/data/content";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
-import { heroCurve, heroCurveMobile } from "./curves";
-import { FlowLine } from "./decor";
+import { ArrowDown } from "./icons";
 
 const DWELL = 6;
+const shortestLabel = stats.reduce((a, b) => (b.label.length < a.label.length ? b : a)).label;
 const FADE = 1.2;
 
 export function Hero() {
@@ -126,8 +126,8 @@ export function Hero() {
   return (
     <section ref={root} aria-label="Intro" className="relative z-10 px-2 pt-2 md:px-3 md:pt-3">
       <div className="hero-tilt will-change-transform">
-      <div className="hero-screen relative h-[100svh] max-h-[980px] min-h-[640px] overflow-hidden rounded-[28px] bg-ink md:rounded-[36px]">
-        {/* Photo layer (no z-index so the squiggle can pass over it) */}
+      <div className="hero-screen relative h-[calc(100svh-18px)] max-h-[1000px] min-h-140 md:h-[calc(100svh-26px)] overflow-hidden rounded-[28px] bg-ink md:rounded-[36px]">
+        {/* Photo layer */}
         <div className="hero-parallax absolute inset-x-0 -top-[14%] bottom-0">
           <div className="hero-intro absolute inset-0">
             {heroSlides.map((slide, index) => (
@@ -153,6 +153,7 @@ export function Hero() {
         </div>
 
         {/* Legibility overlays */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-black/40" />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-2/5 bg-gradient-to-b from-ink/70 via-ink/25 to-transparent" />
         <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 h-3/5 bg-gradient-to-t from-ink/85 via-ink/35 to-transparent" />
         <div
@@ -161,14 +162,15 @@ export function Hero() {
           style={{ background: "radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(21,23,23,0.55) 100%)" }}
         />
 
-        {/* The squiggle lives inside the screen so it is fully drawn on load and tilts with it */}
-        <FlowLine curve={heroCurve} mobileCurve={heroCurveMobile} intro={1} introDelay={0.6} className="z-10" />
-
         {/* Stats */}
         <dl className="absolute right-6 top-[34%] z-20 flex flex-col items-end gap-4 text-cream md:right-[14%] md:top-[30%] md:gap-8">
           {stats.map((stat) => (
             <div key={stat.label} className="hero-stat flex flex-col items-end gap-2">
-              <dt className="order-2 text-xs tracking-[0.14em] text-cream/75 uppercase md:text-[13px]">{stat.label}</dt>
+              <dt className="relative order-2 translate-x-3 text-xs font-extrabold tracking-[0.14em] whitespace-nowrap text-white uppercase md:translate-x-8 md:text-[13px]">
+                {/* Sized to the shortest label so every label starts on the same left edge */}
+                <span aria-hidden className="invisible">{shortestLabel}</span>
+                <span className="absolute top-0 left-0">{stat.label}</span>
+              </dt>
               <dd className="order-1 font-display text-[clamp(2.6rem,5vw,4.5rem)] font-medium leading-none tracking-tight tabular-nums">
                 <span data-count={stat.value}>0</span>
                 <span className="ml-1 font-light text-mint">{stat.suffix}</span>
@@ -182,9 +184,9 @@ export function Hero() {
           <span className="block overflow-hidden pb-[0.08em]">
             <span className="hero-line block font-light">Teams That Connect.</span>
           </span>
-          <span className="block overflow-hidden pb-[0.08em] md:pl-[10%]">
+          <span className="block overflow-hidden pb-[0.08em]">
             <span className="hero-line block font-light">
-              Workplaces That <span className="font-semibold">Thrive.</span>
+              Workplaces That <span className="block font-semibold text-mint">Thrive.</span>
             </span>
           </span>
         </h1>
@@ -201,18 +203,17 @@ export function Hero() {
         {/* Scroll cue */}
         <div
           aria-hidden
-          className="hero-meta absolute bottom-3 left-1/2 z-20 hidden -translate-x-1/2 flex-col items-center gap-2 md:flex"
+          className="hero-meta absolute bottom-6 left-1/2 z-20 hidden -translate-x-1/2 md:block"
         >
-          <span className="text-[10px] font-medium uppercase tracking-[0.3em] text-cream/70">Scroll</span>
-          <span className="relative block h-6 w-px overflow-hidden bg-cream/20">
-            <span className="hero-cue absolute inset-0 bg-mint" />
+          <span className="grid size-12 place-items-center rounded-full bg-white/10 text-cream shadow-[inset_0_1px_0_rgba(255,255,255,0.25)] ring-1 ring-white/25 backdrop-blur-md">
+            <ArrowDown className="hero-cue size-5" />
           </span>
         </div>
       </div>
       </div>
       <style>{`
-        @keyframes hero-cue { 0% { transform: translateY(-100%); } 60%, 100% { transform: translateY(100%); } }
-        .hero-cue { animation: hero-cue 2s cubic-bezier(0.16,1,0.3,1) infinite; }
+        @keyframes hero-cue { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
+        .hero-cue { animation: hero-cue 1.8s ease-in-out infinite; }
         @media (prefers-reduced-motion: reduce) { .hero-cue { animation: none; } }
       `}</style>
     </section>

@@ -41,9 +41,9 @@ export const promiseCurve = fromPoints([
   [-0.05, 0.88], [0.1, 0.93], [0.28, 0.97], [0.46, 0.95], [0.62, 0.88], [0.76, 0.8], [0.9, 0.72], [1.06, 0.62],
 ]);
 
-/* Offer: dives in from upper-left, traces a broad S across the section, exits lower-left. */
+/* Offer: one wide, smooth arc out to the right and a slightly tighter return path back to the left edge. */
 export const offerCurve = fromPoints([
-  [-0.05, 0.14], [0.14, 0.1], [0.36, 0.22], [0.52, 0.38], [0.72, 0.24], [0.9, 0.44], [0.76, 0.62], [0.5, 0.72], [0.22, 0.84], [-0.05, 0.95],
+  [-0.05, 0.12], [0.4, 0.15], [0.82, 0.3], [0.92, 0.52], [0.7, 0.7], [0.3, 0.82], [-0.05, 0.92],
 ]);
 
 /* Closing CTA: hugs the lower edge so it never crosses the headline or the button. */

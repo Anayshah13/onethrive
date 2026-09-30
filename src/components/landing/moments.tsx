@@ -9,6 +9,7 @@ import { EASE_OUT } from "@/lib/gsap";
 import { Glow, PixelCluster } from "./decor";
 import { ArrowLeft, ArrowRight, Close } from "./icons";
 import { Reveal } from "./reveal";
+import { lockScroll } from "./smooth-scroll";
 import { TextLink } from "./ui";
 
 type Filter = "All" | MomentCategory;
@@ -72,7 +73,7 @@ export function Moments() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <section id="moments" className="relative isolate overflow-hidden py-24 md:py-36">
+      <section id="moments" className="relative isolate overflow-hidden py-14 md:py-20">
         <Glow className="-z-10 top-1/4 -right-24 size-[30rem]" />
         <Glow tone="soft" className="-z-10 bottom-10 -left-24 size-[26rem]" />
         <PixelCluster cols={10} rows={6} seed={61} className="absolute -z-10 top-16 left-4 hidden md:block" />
@@ -193,13 +194,14 @@ export function Moments() {
   );
 }
 
-function Lightbox({
+/* Full-screen photo viewer, shared with the gallery page. */
+export function Lightbox({
   photos,
   index,
   onIndexChange,
   onClose,
 }: {
-  photos: Moment[];
+  photos: ReadonlyArray<{ src: string; alt: string; category: string }>;
   index: number;
   onIndexChange: (index: number) => void;
   onClose: () => void;
@@ -213,10 +215,13 @@ function Lightbox({
 
   useEffect(() => {
     closeRef.current?.focus();
+    // Lenis drives scrolling, so body overflow alone would not stop the page moving behind.
     const { overflow } = document.body.style;
     document.body.style.overflow = "hidden";
+    lockScroll(true);
     return () => {
       document.body.style.overflow = overflow;
+      lockScroll(false);
     };
   }, []);
 

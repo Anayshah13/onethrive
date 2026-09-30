@@ -33,14 +33,14 @@ export const aboutRoot = { label: "About us", href: "/about-us" } as const;
 
 export const contactRoute = { label: "Contact", href: "/contact-us" } as const;
 
+export const galleryRoute = { label: "Gallery", href: "/gallery" } as const;
+
 /* Header order. `children` turns an item into a dropdown. */
 export const headerNav: Array<NavLink & { children?: ReadonlyArray<(typeof aboutSections)[number]> }> = [
   { ...aboutRoot, children: aboutSections },
   { label: "Services", href: "#offer" },
   { label: "Destinations", href: "#destinations" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "FAQs", href: "#faqs" },
-  { label: "Moments", href: "#moments" },
+  galleryRoute,
   contactRoute,
 ];
 

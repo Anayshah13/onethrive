@@ -25,7 +25,7 @@ export function Faqs() {
   const toggle = (index: number) => setOpenIndex((current) => (current === index ? -1 : index));
 
   return (
-    <section id="faqs" className="relative isolate py-24 md:py-36">
+    <section id="faqs" className="relative isolate py-14 md:py-20">
       <Glow tone="soft" className="-z-10 top-1/4 -left-24 size-[30rem]" />
       <PixelCluster cols={12} rows={7} seed={37} className="absolute -z-10 top-10 left-4 md:left-10" />
       <PixelCluster cols={10} rows={7} seed={53} className="absolute -z-10 bottom-16 right-4 hidden md:block" />

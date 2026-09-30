@@ -255,7 +255,7 @@ function MarqueeRow({ items, reverse, duration }: { items: typeof others; revers
 
 export function Destinations() {
   return (
-    <section id="destinations" className="relative isolate py-24 md:py-36">
+    <section id="destinations" className="relative isolate py-14 md:py-20">
       <Glow className="-z-10 top-1/3 left-1/2 size-[34rem] -translate-x-1/2" />
       <Glow tone="soft" className="-z-10 bottom-0 -left-20 size-[26rem]" />
       <PixelCluster cols={10} rows={6} seed={41} className="absolute bottom-16 right-6 hidden md:block" />

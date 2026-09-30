@@ -2,10 +2,7 @@ export const nav = [
   { label: "Why OneThrive", href: "#promise" },
   { label: "Services", href: "#offer" },
   { label: "Destinations", href: "#destinations" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "FAQs", href: "#faqs" },
-  { label: "Moments", href: "#moments" },
-  { label: "Crew", href: "#crew" },
+  { label: "Gallery", href: "#moments" },
 ] as const;
 
 export const contact = {
@@ -387,11 +384,11 @@ export const gallery = [
 
 export const momentCategories = [
   "Foundation Day",
-  "Carnival",
   "Team Building",
   "Wellness",
   "Festive & Craft",
-  "Offsites & Sports",
+  "Offsites",
+  "Sports",
   "Virtual",
 ] as const;
 
@@ -417,13 +414,13 @@ export const moments: Array<{
   { src: "/event-photos/Foundation Day/Copy of Copy of 1E4A7411.JPG", alt: "Colleagues crowding around the table and cheering as the Foundation Day cake is cut", category: "Foundation Day", shape: "wide" },
   { src: "/event-photos/Foundation Day/Copy of Copy of 1E4A7508.JPG", alt: "Guests throwing their hands up on the dance floor at the Foundation Day after-party", category: "Foundation Day", shape: "square" },
 
-  // Carnival
-  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7342.JPG", alt: "Guest swinging a mallet at a high-striker strength game at an indoor carnival", category: "Carnival", shape: "wide", featured: true },
-  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7185.JPG", alt: "Smiling guest showing off red and white face paint", category: "Carnival", shape: "tall", featured: true },
-  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7164.JPG", alt: "Grinning guest mid-throw at a carnival game stall under bright hanging lights", category: "Carnival", shape: "wide" },
-  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7341.JPG", alt: "Guest holding up her freshly drawn live caricature", category: "Carnival", shape: "tall" },
-  { src: "/photos/cotton-candy.jpg", alt: "Two colleagues biting into pink cotton candy", category: "Carnival", shape: "tall" },
-  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7536.JPG", alt: "Printed photo-booth strips laid out on a table for guests to collect", category: "Carnival", shape: "wide" },
+  // Foundation Day: carnival
+  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7342.JPG", alt: "Guest swinging a mallet at a high-striker strength game at an indoor carnival", category: "Foundation Day", shape: "wide", featured: true },
+  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7185.JPG", alt: "Smiling guest showing off red and white face paint", category: "Foundation Day", shape: "tall" },
+  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7164.JPG", alt: "Grinning guest mid-throw at a carnival game stall under bright hanging lights", category: "Foundation Day", shape: "wide" },
+  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7341.JPG", alt: "Guest holding up her freshly drawn live caricature", category: "Foundation Day", shape: "tall" },
+  { src: "/photos/cotton-candy.jpg", alt: "Two colleagues biting into pink cotton candy", category: "Foundation Day", shape: "tall" },
+  { src: "/event-photos/Carnival/Copy of Copy of 1E4A7536.JPG", alt: "Printed photo-booth strips laid out on a table for guests to collect", category: "Foundation Day", shape: "wide" },
 
   // Team Building
   { src: "/photos/net-lift-2.jpg", alt: "Teammates carrying a colleague across the turf in a green cargo net", category: "Team Building", shape: "tall", featured: true },
@@ -450,13 +447,13 @@ export const moments: Array<{
   { src: "/event-photos/Creative Workshop/Big Picture/Copy of IMG_5062.JPG", alt: "Participant painting a canvas at an art workshop", category: "Festive & Craft", shape: "tall" },
   { src: "/photos/tote-line.jpg", alt: "Workshop participants lined up outdoors holding the tote bags they hand-painted", category: "Festive & Craft", shape: "wide" },
 
-  // Offsites & Sports
-  { src: "/photos/beach-dusk.jpg", alt: "Team in orange and yellow bibs holding a Happi Planet banner on the beach at dusk", category: "Offsites & Sports", shape: "tall", featured: true },
-  { src: "/photos/beach-cricket.jpg", alt: "Colleagues playing a game of cricket on the beach", category: "Offsites & Sports", shape: "wide", featured: true },
-  { src: "/photos/cricket-bat.jpg", alt: "Batter mid-swing in a box cricket match under the nets", category: "Offsites & Sports", shape: "tall" },
-  { src: "/photos/beach-sand.jpg", alt: "Happi Planet written in the sand at the water's edge", category: "Offsites & Sports", shape: "tall" },
-  { src: "/photos/offsite-talk.jpg", alt: "Speaker presenting to the team during an offsite session", category: "Offsites & Sports", shape: "tall" },
-  { src: "/event-photos/Team Building/Copy of IMG_1907.PNG", alt: "Colleagues gathered on an artificial turf ground under the nets before a sports-day game", category: "Offsites & Sports", shape: "tall" },
+  // Offsites
+  { src: "/photos/beach-dusk.jpg", alt: "Team in orange and yellow bibs holding a Happi Planet banner on the beach at dusk", category: "Offsites", shape: "tall", featured: true },
+  { src: "/photos/beach-cricket.jpg", alt: "Colleagues playing a game of cricket on the beach", category: "Sports", shape: "wide", featured: true },
+  { src: "/photos/cricket-bat.jpg", alt: "Batter mid-swing in a box cricket match under the nets", category: "Sports", shape: "tall" },
+  { src: "/photos/beach-sand.jpg", alt: "Happi Planet written in the sand at the water's edge", category: "Offsites", shape: "tall" },
+  { src: "/photos/offsite-talk.jpg", alt: "Speaker presenting to the team during an offsite session", category: "Offsites", shape: "tall" },
+  { src: "/event-photos/Team Building/Copy of IMG_1907.PNG", alt: "Colleagues gathered on an artificial turf ground under the nets before a sports-day game", category: "Sports", shape: "tall" },
 
   // Virtual
   { src: "/event-photos/Virtual/Copy of IMG_010.png", alt: "Video call grid of remote employees raising their arms during a virtual yoga session", category: "Virtual", shape: "wide", featured: true },

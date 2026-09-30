@@ -17,6 +17,7 @@ import { FlowLine, Glow, PixelCluster } from "./decor";
 import { Close } from "./icons";
 import { Reveal } from "./reveal";
 import { lockScroll } from "./smooth-scroll";
+import { TextLink } from "./ui";
 
 type Offer = (typeof offers)[number];
 
@@ -104,7 +105,7 @@ function Photo({ offer, sizes, className = "" }: { offer: Offer; sizes: string; 
 function StampCard({ offer, index }: { offer: Offer; index: number }) {
   return (
     <div className="drop-shadow-[0_18px_28px_rgba(27,97,72,0.18)] transition-transform duration-500 ease-out group-hover:-translate-y-1.5 sm:-rotate-2">
-      <div className="relative bg-white p-5" style={{ mask: stampMask, WebkitMask: stampMask }}>
+      <div className="relative bg-white p-5 lg:p-4" style={{ mask: stampMask, WebkitMask: stampMask }}>
         <div className="relative aspect-[4/3] overflow-hidden ring-1 ring-ink/10">
           <Photo offer={offer} sizes="(min-width: 1024px) 420px, (min-width: 640px) 45vw, 90vw" />
           <span className={`absolute top-2 left-2 rounded-sm bg-cream/90 px-1.5 py-0.5 text-ink ${KICKER}`}>
@@ -114,7 +115,7 @@ function StampCard({ offer, index }: { offer: Offer; index: number }) {
         <svg
           aria-hidden
           viewBox="0 0 100 100"
-          className="pointer-events-none absolute top-2 right-2 w-20 -rotate-12 text-emerald/80 mix-blend-multiply md:w-24"
+          className="pointer-events-none absolute top-2 right-2 w-20 -rotate-12 text-emerald/80 mix-blend-multiply md:w-24 lg:w-16"
         >
           <defs>
             <path id="offer-postmark-arc" d="M50 50 m-35 0 a35 35 0 1 1 70 0 a35 35 0 1 1 -70 0" />
@@ -127,7 +128,7 @@ function StampCard({ offer, index }: { offer: Offer; index: number }) {
           <path d="M34 46 q8 -6 16 0 t16 0 M34 54 q8 -6 16 0 t16 0" fill="none" stroke="currentColor" strokeWidth="2" />
         </svg>
         <div className="flex items-end justify-between gap-3 pt-4">
-          <h3 className={`${DISPLAY} text-[1.9rem] leading-[0.95] font-bold text-ink md:text-4xl`}>{offer.title}</h3>
+          <h3 className={`${DISPLAY} text-[1.9rem] leading-[0.95] font-bold text-ink md:text-4xl lg:text-2xl`}>{offer.title}</h3>
           <span className={`${KICKER} shrink-0 pb-1 text-emerald`}>{offer.kicker}</span>
         </div>
         <p className="mt-2 max-w-[38ch] text-sm leading-relaxed text-grey">{offer.blurb}</p>
@@ -144,10 +145,10 @@ function PuzzleCard({ offer, index }: { offer: Offer; index: number }) {
         <Photo offer={offer} sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw" />
       </div>
       <div className="mt-4 flex items-baseline gap-3 px-1">
-        <span className={`${DISPLAY} text-5xl font-extrabold text-emerald/25`}>{num(index)}</span>
+        <span className={`${DISPLAY} text-5xl font-extrabold text-emerald/25 lg:text-4xl`}>{num(index)}</span>
         <div>
           <p className={`${KICKER} text-emerald`}>{offer.kicker}</p>
-          <h3 className={`${DISPLAY} mt-0.5 text-3xl leading-none font-bold text-ink`}>{offer.title}</h3>
+          <h3 className={`${DISPLAY} mt-0.5 text-3xl leading-none font-bold text-ink lg:text-2xl`}>{offer.title}</h3>
         </div>
       </div>
       <p className="mt-3 px-1 text-sm leading-relaxed text-ink/70">{offer.blurb}</p>
@@ -175,7 +176,7 @@ function ArchCard({ offer, index }: { offer: Offer; index: number }) {
             className={`pointer-events-none absolute z-10 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-mint shadow-[0_0_10px_2px_rgba(0,255,171,0.55)] transition-opacity duration-500 group-hover:opacity-100 ${i % 2 ? "opacity-50" : "opacity-95"}`}
           />
         ))}
-        <div className="relative m-3 aspect-[3/4] overflow-hidden rounded-b-xl [border-top-left-radius:50%_7.5rem] [border-top-right-radius:50%_7.5rem] lg:aspect-auto lg:min-h-[22rem] lg:flex-1">
+        <div className="relative m-3 aspect-[3/4] overflow-hidden rounded-b-xl [border-top-left-radius:50%_7.5rem] [border-top-right-radius:50%_7.5rem] lg:aspect-auto lg:min-h-[16rem] lg:flex-1">
           <Photo offer={offer} sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 90vw" />
         </div>
       </div>
@@ -199,15 +200,15 @@ function PolaroidCard({ offer, index }: { offer: Offer; index: number }) {
         className="absolute -top-3 left-1/2 z-10 h-7 w-24 -translate-x-1/2 -rotate-3 bg-mint/45 shadow-sm backdrop-blur-[1px]"
       />
       <div className="bg-white p-3 pb-5 shadow-float ring-1 ring-ink/5">
-        <div className="relative aspect-square overflow-hidden bg-mint-wash">
+        <div className="relative aspect-square overflow-hidden bg-mint-wash lg:aspect-[4/3]">
           <Photo offer={offer} sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw" className="saturate-[1.1]" />
         </div>
         <div className="px-1 pt-4">
           <div className="flex items-baseline justify-between gap-2">
-            <h3 className={`${DISPLAY} text-3xl leading-none font-bold text-ink`}>{offer.title}</h3>
-            <span className="font-serif text-xl text-emerald italic">no. {num(index)}</span>
+            <h3 className={`${DISPLAY} text-3xl leading-none font-bold text-ink lg:text-2xl`}>{offer.title}</h3>
+            <span className="font-serif text-xl lg:text-base text-emerald italic">no. {num(index)}</span>
           </div>
-          <p className="mt-2 font-serif text-lg leading-snug text-ink/70 italic">{offer.blurb}</p>
+          <p className="mt-2 font-serif text-lg leading-snug text-ink/70 italic lg:text-base">{offer.blurb}</p>
         </div>
       </div>
     </div>
@@ -219,7 +220,7 @@ function TicketCard({ offer, index }: { offer: Offer; index: number }) {
   return (
     <div className="drop-shadow-[0_18px_28px_rgba(18,63,48,0.25)] transition-transform duration-500 ease-out group-hover:-translate-y-1.5">
       <div
-        className="relative flex min-h-[15rem] overflow-hidden rounded-[1.4rem] bg-emerald-deep sm:min-h-[17rem]"
+        className="relative flex min-h-[15rem] overflow-hidden rounded-[1.4rem] bg-emerald-deep sm:min-h-[17rem] lg:min-h-[15rem]"
         style={{ mask: ticketMask, WebkitMask: ticketMask }}
       >
         <div className="relative w-[72%] overflow-hidden">
@@ -227,7 +228,7 @@ function TicketCard({ offer, index }: { offer: Offer; index: number }) {
           <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-emerald-deep via-emerald-deep/55 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
             <p className={`${KICKER} text-mint`}>{offer.kicker}</p>
-            <h3 className={`${DISPLAY} mt-1 text-[1.75rem] leading-[0.95] font-bold text-cream sm:text-4xl`}>
+            <h3 className={`${DISPLAY} mt-1 text-[1.75rem] leading-[0.95] font-bold text-cream sm:text-4xl lg:text-3xl`}>
               {offer.title}
             </h3>
             <p className="mt-2 max-w-[34ch] text-[0.8rem] leading-relaxed text-cream/75 sm:text-sm">{offer.blurb}</p>
@@ -268,14 +269,14 @@ function PebbleCard({ offer, index }: { offer: Offer; index: number }) {
       style={{ borderRadius: BREATH[0] }}
       animate={breathe}
       transition={breatheT}
-      className="bg-mint/90 px-7 py-10 transition-shadow duration-500 group-hover:shadow-lift sm:px-12 sm:py-12"
+      className="bg-mint/90 px-7 py-10 transition-shadow duration-500 group-hover:shadow-lift sm:px-12 sm:py-12 lg:px-9 lg:py-8"
     >
-      <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
+      <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8 lg:gap-5">
         <motion.div
           style={{ borderRadius: BREATH[2] }}
           animate={reduce ? undefined : { borderRadius: [BREATH[2], BREATH[0], BREATH[1], BREATH[2]] }}
           transition={breatheT}
-          className="relative aspect-square w-40 shrink-0 overflow-hidden ring-4 ring-cream/60 sm:w-48"
+          className="relative aspect-square w-40 shrink-0 overflow-hidden ring-4 ring-cream/60 sm:w-48 lg:w-32"
         >
           <Photo offer={offer} sizes="200px" />
         </motion.div>
@@ -283,7 +284,7 @@ function PebbleCard({ offer, index }: { offer: Offer; index: number }) {
           <p className={`${KICKER} text-emerald-deep/70`}>
             {num(index)} · {offer.kicker}
           </p>
-          <h3 className={`${DISPLAY} mt-1.5 text-[2.6rem] leading-[0.9] font-bold text-emerald-deep md:text-5xl`}>
+          <h3 className={`${DISPLAY} mt-1.5 text-[2.6rem] leading-[0.9] font-bold text-emerald-deep md:text-5xl lg:text-4xl`}>
             {offer.title}
           </h3>
           <p className="mx-auto mt-3 max-w-[36ch] text-sm leading-relaxed text-emerald-deep/80 sm:mx-0">{offer.blurb}</p>
@@ -294,49 +295,15 @@ function PebbleCard({ offer, index }: { offer: Offer; index: number }) {
 }
 
 /* Each event gets its own silhouette and its own spot in the bento. */
+/* Desktop is two rows (arch spans both) so the whole section fits in about one screen. */
 const LAYOUT: Array<{ Card: (p: { offer: Offer; index: number }) => React.ReactNode; className: string }> = [
-  { Card: StampCard, className: "lg:col-span-5 lg:col-start-1 lg:row-start-1" },
-  { Card: PuzzleCard, className: "sm:mt-10 lg:col-span-4 lg:col-start-6 lg:row-start-1 lg:mt-16" },
+  { Card: StampCard, className: "lg:col-span-3 lg:col-start-1 lg:row-start-1" },
+  { Card: PuzzleCard, className: "sm:mt-10 lg:mt-0 lg:col-span-3 lg:col-start-4 lg:row-start-1" },
   { Card: ArchCard, className: "lg:col-span-3 lg:col-start-10 lg:row-span-2 lg:row-start-1" },
-  { Card: PolaroidCard, className: "sm:mt-10 lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:-mt-2 lg:px-4" },
-  { Card: TicketCard, className: "sm:col-span-2 lg:col-span-5 lg:col-start-5 lg:row-start-2 lg:mt-10 lg:self-start" },
-  { Card: PebbleCard, className: "sm:col-span-2 lg:col-span-7 lg:col-start-2 lg:row-start-3 lg:-mt-6" },
+  { Card: PolaroidCard, className: "sm:mt-10 lg:mt-0 lg:col-span-3 lg:col-start-7 lg:row-start-1" },
+  { Card: TicketCard, className: "sm:col-span-2 lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:self-center" },
+  { Card: PebbleCard, className: "sm:col-span-2 lg:col-span-5 lg:col-start-5 lg:row-start-2 lg:self-center" },
 ];
-
-/* Round, slowly spinning sticker that opens the activities sheet. */
-function ActivitiesSticker({ onOpen }: { onOpen: () => void }) {
-  const reduce = useReducedMotion();
-  return (
-    <button
-      type="button"
-      onClick={onOpen}
-      aria-haspopup="dialog"
-      aria-label={`${activityCount}+ activities available`}
-      className="group/sticker relative mx-auto grid size-44 cursor-pointer place-items-center rounded-full bg-ink text-mint shadow-lift transition-transform duration-500 ease-spring hover:scale-105 active:scale-95 md:size-52"
-    >
-      <motion.svg
-        aria-hidden
-        viewBox="0 0 100 100"
-        className="absolute inset-0 size-full"
-        animate={reduce ? undefined : { rotate: 360 }}
-        transition={{ duration: 28, ease: "linear", repeat: Infinity }}
-      >
-        <defs>
-          <path id="offer-sticker-arc" d="M50 50 m-39 0 a39 39 0 1 1 78 0 a39 39 0 1 1 -78 0" />
-        </defs>
-        <text fill="currentColor" fontSize="8.2" fontWeight="600" className="font-offer">
-          <textPath href="#offer-sticker-arc" textLength="240" lengthAdjust="spacing">ACTIVITIES AVAILABLE · SEE THE SHELF ·</textPath>
-        </text>
-      </motion.svg>
-      <span aria-hidden className="flex flex-col items-center">
-        <span className={`${DISPLAY} text-5xl leading-none font-extrabold md:text-6xl`}>{activityCount}+</span>
-        <span className="mt-1 text-[0.65rem] font-semibold tracking-[0.2em] text-cream/60 uppercase transition-colors group-hover/sticker:text-mint">
-          open ↗
-        </span>
-      </span>
-    </button>
-  );
-}
 
 /* Chunky, blocky quote mark: a rounded block with a slanted tail, drawn twice. */
 function QuoteMark({ closing = false, className = "" }: { closing?: boolean; className?: string }) {
@@ -482,7 +449,7 @@ export function Offer() {
   );
 
   return (
-    <section id="offer" className="relative isolate py-24 md:py-36">
+    <section id="offer" className="relative isolate py-12 md:py-14 lg:py-10">
       <Glow className="-z-10 top-24 -left-20 size-[28rem]" />
       <Glow tone="soft" className="-z-10 bottom-10 -right-24 size-[32rem]" />
       <PixelCluster cols={12} rows={7} seed={11} className="absolute top-16 right-4 md:right-10" />
@@ -499,22 +466,22 @@ export function Offer() {
 
       <div className="relative z-10 mx-auto w-full max-w-[1240px] px-5 md:px-8">
         <Reveal as="header" className="mx-auto max-w-2xl text-center">
-          <h2 className="text-[clamp(2.75rem,6vw,5.25rem)] leading-[0.95] text-ink">
+          <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] leading-[0.95] text-ink">
             <span className={`${DISPLAY} font-bold`}>What we</span>{" "}
             <span className="font-serif font-normal text-emerald italic">offer</span>
           </h2>
-          <p className="mx-auto mt-5 max-w-md text-grey text-balance">
+          <p className="mx-auto mt-4 max-w-md text-grey text-balance">
             Six ways we bring a team together — each one shaped around yours.
           </p>
         </Reveal>
 
-        <div ref={gridRef} className="relative mx-auto mt-16 max-w-[1120px] md:mt-24">
+        <div ref={gridRef} className="relative mx-auto mt-14 max-w-[1120px] lg:mt-12">
           <QuoteMark className="-top-9 -left-1 origin-bottom-right md:-top-16 md:-left-12" />
           <QuoteMark closing className="-right-1 -bottom-9 origin-top-left md:-right-12 md:-bottom-16" />
 
           <Reveal
             stagger={0.08}
-            className="relative z-10 grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-12 lg:gap-x-6 lg:gap-y-8"
+            className="relative z-10 grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-12 lg:gap-x-5 lg:gap-y-6"
           >
             {offers.map((offer, index) => {
               const { Card, className } = LAYOUT[index % LAYOUT.length];
@@ -524,11 +491,14 @@ export function Offer() {
                 </Tilt>
               );
             })}
-            <div className="grid place-items-center py-4 sm:col-span-2 lg:col-span-3 lg:col-start-9 lg:row-start-3 lg:py-0">
-              <ActivitiesSticker onOpen={() => setOpen(true)} />
-            </div>
           </Reveal>
         </div>
+
+        <Reveal className="mt-16 text-center md:mt-24">
+          <TextLink onClick={() => setOpen(true)}>
+            Browse all {activityCount}+ activities
+          </TextLink>
+        </Reveal>
       </div>
 
       <ActivitiesSheet open={open} onClose={close} />

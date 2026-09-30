@@ -101,7 +101,7 @@ export function Header() {
   const current = headerNav.find((item) => isCurrent(item.href))?.href ?? null;
   const highlight = hovered ?? current;
   const linkClass = (href: string) =>
-    `relative inline-flex items-center gap-1 rounded-full px-3.5 py-2 text-[13.5px] font-medium transition-colors duration-300 xl:px-4 ${
+    `relative inline-flex items-center gap-1 rounded-full px-3.5 py-2 text-base font-medium transition-colors duration-300 xl:px-4 ${
       isCurrent(href) ? "text-ink" : "text-ink/65 hover:text-ink"
     }`;
   const pill = (href: string) =>
@@ -118,7 +118,7 @@ export function Header() {
       <header className="pointer-events-none fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-6 md:pt-5">
         <div
           ref={bar}
-          className="pointer-events-auto mx-auto flex h-16 w-full max-w-295 items-center justify-between rounded-full bg-white/75 py-2 pr-2 pl-5 shadow-float ring-1 ring-ink/6 backdrop-blur-xl md:h-17 md:pl-6"
+          className="pointer-events-auto mx-auto flex h-14 w-full max-w-270 items-center justify-between rounded-full bg-white/75 py-1.5 pr-1.5 pl-5 shadow-float ring-1 ring-ink/6 backdrop-blur-xl md:h-16 md:pl-6"
         >
           <Link
             href={onHome ? "#top" : "/"}
@@ -132,7 +132,7 @@ export function Header() {
               width={629}
               height={396}
               preload
-              className="h-9 w-auto md:h-10"
+              className="h-8 w-auto md:h-9"
             />
           </Link>
 
@@ -163,7 +163,7 @@ export function Header() {
                     {pill(item.href)}
                     <span className="relative">{item.label}</span>
                     <Chevron
-                      className={`relative size-3.5 transition-transform duration-500 ease-spring ${aboutOpen ? "rotate-180" : ""}`}
+                      className={`relative size-4 transition-transform duration-500 ease-spring ${aboutOpen ? "rotate-180" : ""}`}
                     />
                   </Link>
                   <AboutMenu open={aboutOpen} pathname={pathname} onNavigate={() => setAboutOpen(false)} />
@@ -185,10 +185,12 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <TalkButton size="sm" className="hidden sm:inline-flex" />
+            <TalkButton size="md" className="hidden text-base! sm:inline-flex">
+              Plan your event
+            </TalkButton>
             <button
               type="button"
-              className="relative grid size-12 cursor-pointer place-items-center rounded-full bg-ink text-cream lg:hidden"
+              className="relative grid size-11 cursor-pointer place-items-center rounded-full bg-ink text-cream lg:hidden"
               aria-expanded={menu}
               aria-controls="mobile-menu"
               aria-label={menu ? "Close menu" : "Open menu"}
@@ -305,7 +307,7 @@ export function Header() {
                 }}
                 className="h-14 cursor-pointer rounded-full bg-mint font-semibold text-ink"
               >
-                Plan your offsite
+                Plan your event
               </button>
               <a href={`mailto:${contact.email}`} className="text-center text-sm text-grey">
                 {contact.email}
@@ -324,13 +326,13 @@ function AboutMenu({ open, pathname, onNavigate }: { open: boolean; pathname: st
     <AnimatePresence>
       {open && (
         <motion.div
-          className="absolute top-full left-1/2 w-[560px] -translate-x-1/2 pt-4"
+          className="absolute top-full left-1/2 w-160 -translate-x-1/2 pt-4"
           initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
           animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
           exit={{ opacity: 0, y: 6, filter: "blur(4px)", transition: { duration: 0.18 } }}
           transition={{ duration: 0.45, ease: EASE_OUT }}
         >
-          <div className="rounded-[26px] bg-white/60 p-1.5 shadow-lift ring-1 ring-ink/6 backdrop-blur-xl">
+          <div className="rounded-[26px] bg-white p-1.5 shadow-lift ring-1 ring-ink/6">
             <div className="grid grid-cols-[0.9fr_1.1fr] gap-1.5">
               <Link
                 href={aboutRoot.href}
@@ -339,14 +341,14 @@ function AboutMenu({ open, pathname, onNavigate }: { open: boolean; pathname: st
                 className="group relative flex flex-col justify-between overflow-hidden rounded-[20px] bg-ink p-5 text-cream"
               >
                 <span aria-hidden className="absolute -top-10 -right-10 size-36 rounded-full bg-mint/25 blur-2xl" />
-                <span className="relative text-[10.5px] font-medium tracking-[0.2em] text-mint uppercase">About us</span>
-                <span className="relative mt-10 font-display text-2xl leading-tight font-light tracking-tight">
+                <span className="relative text-xs font-medium tracking-[0.2em] text-mint uppercase">About us</span>
+                <span className="relative mt-10 font-display text-3xl leading-tight font-light tracking-tight">
                   The people behind{" "}
                   <span className="font-serif text-mint italic">the day.</span>
                 </span>
-                <span className="relative mt-4 inline-flex items-center gap-2 text-[13px] text-cream/70 transition-colors group-hover:text-mint">
+                <span className="relative mt-4 inline-flex items-center gap-2 text-base text-cream/70 transition-colors group-hover:text-mint">
                   Overview
-                  <ArrowUpRight className="size-3.5 transition-transform duration-500 ease-spring group-hover:rotate-45" />
+                  <ArrowUpRight className="size-4 transition-transform duration-500 ease-spring group-hover:rotate-45" />
                 </span>
               </Link>
               <ul className="flex flex-col gap-1">
@@ -362,13 +364,13 @@ function AboutMenu({ open, pathname, onNavigate }: { open: boolean; pathname: st
                           here ? "bg-mint-wash" : "hover:bg-mint-wash/70"
                         }`}
                       >
-                        <span className="mt-0.5 font-display text-[11px] text-emerald/70 tabular-nums">{section.index}</span>
+                        <span className="mt-0.5 font-display text-sm text-emerald/70 tabular-nums">{section.index}</span>
                         <span className="min-w-0 flex-1">
-                          <span className="flex items-center justify-between gap-2 text-sm font-semibold text-ink">
+                          <span className="flex items-center justify-between gap-2 text-base font-semibold text-ink">
                             {section.label}
-                            <ArrowUpRight className="size-3.5 -translate-x-1 opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
+                            <ArrowUpRight className="size-4 -translate-x-1 opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
                           </span>
-                          <span className="mt-0.5 block text-[12.5px] leading-5 text-grey">{section.blurb}</span>
+                          <span className="mt-0.5 block text-sm leading-5 text-grey">{section.blurb}</span>
                         </span>
                       </Link>
                     </li>

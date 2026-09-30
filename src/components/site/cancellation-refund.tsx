@@ -1,5 +1,6 @@
 "use client";
 
+import { contact } from "@/data/content";
 import { PageHero } from "@/components/site/page-kit";
 
 export function CancellationRefundPage() {
@@ -107,7 +108,7 @@ function PolicyBody() {
         <p>
           Questions about a booking, cancellation or refund? Email{" "}
           <a href="mailto:info@onethrive.in">info@onethrive.in</a> or call{" "}
-          <a href="tel:+919082888912">+91 90828 88912</a>.
+          <a href={contact.phoneHref}>{contact.phone}</a>.
         </p>
       </Section>
     </div>

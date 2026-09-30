@@ -2,7 +2,6 @@
 
 import { ClosingCta } from "./closing-cta";
 import { ContactPopup } from "./contact-popup";
-import { Crew } from "./crew";
 import { Destinations } from "./destinations";
 import { Faqs } from "./faqs";
 import { Footer } from "./footer";
@@ -29,7 +28,6 @@ export function HomePage() {
           <Testimonials />
           <Faqs />
           <Moments />
-          <Crew />
           <ClosingCta />
         </main>
         <Footer />

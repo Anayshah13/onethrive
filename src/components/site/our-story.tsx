@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import { activityCount, crew, stats } from "@/data/content";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
+import { Crew } from "@/components/landing/crew";
 import { Glow, PixelCluster } from "@/components/landing/decor";
 import { Reveal } from "@/components/landing/reveal";
 import { AboutNext, AboutTabs, PageHero } from "@/components/site/page-kit";
@@ -224,24 +225,7 @@ export function OurStory() {
         </div>
       </section>
 
-      {/* Crew photo strip */}
-      <section className="relative isolate overflow-x-clip py-12 md:py-20">
-        <div className="mx-auto w-full max-w-[1240px] px-5 md:px-8">
-          <Reveal>
-            <span className="eyebrow">The crew today</span>
-          </Reveal>
-          <Reveal
-            stagger={0.08}
-            className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3"
-          >
-            {crew.photos.map((photo) => (
-              <div key={photo.src} className="relative aspect-[4/5] overflow-hidden rounded-2xl ring-1 ring-ink/5">
-                <Image src={photo.src} alt={photo.alt} fill sizes="(min-width: 640px) 33vw, 100vw" className="object-cover" />
-              </div>
-            ))}
-          </Reveal>
-        </div>
-      </section>
+      <Crew />
 
       <AboutNext />
     </>

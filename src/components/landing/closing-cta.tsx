@@ -41,7 +41,7 @@ export function ClosingCta() {
   );
 
   return (
-    <section className="px-2 py-12 md:px-3 md:py-20" aria-labelledby="cta-title">
+    <section className="px-2 py-8 md:px-3 md:py-12" aria-labelledby="cta-title">
       <div
         ref={panelRef}
         className="relative mx-auto max-w-[1400px] overflow-hidden rounded-[2.25rem] bg-ink px-6 py-20 text-center md:rounded-[2.75rem] md:py-32"

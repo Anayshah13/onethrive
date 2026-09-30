@@ -89,7 +89,7 @@ export function Testimonials() {
   );
 
   return (
-    <section ref={sectionRef} id="testimonials" className="relative isolate py-24 md:py-36">
+    <section ref={sectionRef} id="testimonials" className="relative isolate py-14 md:py-20">
       <Glow className="-z-10 top-10 right-[12%] size-[26rem]" />
       <Glow tone="soft" className="-z-10 bottom-10 left-[8%] size-[30rem]" />
       <PixelCluster cols={14} rows={8} seed={7} className="absolute top-10 left-0 -z-0" />

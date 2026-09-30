@@ -27,6 +27,14 @@ export function ArrowRight({ className = "size-4" }: IconProps) {
   );
 }
 
+export function ArrowDown({ className = "size-4" }: IconProps) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} {...base}>
+      <path d="M12 4v16M6 14l6 6 6-6" />
+    </svg>
+  );
+}
+
 export function ArrowLeft({ className = "size-4" }: IconProps) {
   return (
     <svg viewBox="0 0 24 24" className={className} {...base}>

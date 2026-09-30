@@ -70,7 +70,7 @@ export function Crew() {
   );
 
   return (
-    <section ref={root} id="crew" aria-labelledby="crew-title" className="relative isolate overflow-x-clip py-24 md:py-36">
+    <section ref={root} id="crew" aria-labelledby="crew-title" className="relative isolate overflow-x-clip py-14 md:py-20">
       <Glow className="-z-10 top-20 -left-24 size-[26rem]" />
       <Glow tone="soft" className="-z-10 right-0 bottom-10 size-[28rem]" />
       <PixelCluster cols={14} rows={7} seed={41} className="absolute top-8 right-4 hidden opacity-70 md:block" />

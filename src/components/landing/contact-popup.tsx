@@ -78,7 +78,7 @@ export function ContactPopup() {
               aria-modal="true"
               aria-labelledby="contact-popup-title"
               data-lenis-prevent
-              className="pointer-events-auto w-full max-w-[480px] overflow-y-auto overscroll-contain rounded-[28px] bg-cream shadow-[0_40px_80px_-20px_rgba(18,63,48,0.45)] ring-1 ring-ink/5"
+              className="pointer-events-auto w-full max-w-[480px] overflow-y-auto overscroll-contain rounded-[28px] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden bg-cream shadow-[0_40px_80px_-20px_rgba(18,63,48,0.45)] ring-1 ring-ink/5"
               style={{ maxHeight: "90dvh" }}
               initial={{ opacity: 0, scale: 0.94, y: 24 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}

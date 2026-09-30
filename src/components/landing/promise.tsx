@@ -71,7 +71,7 @@ export function PromiseSection() {
   );
 
   return (
-    <section ref={root} id="promise" className="relative isolate py-32 md:py-52 lg:py-60">
+    <section ref={root} id="promise" className="relative isolate py-16 md:py-24 lg:py-28">
       <Glow className="-z-10 top-16 right-[8%] size-[26rem]" />
       <Glow tone="soft" className="-z-10 bottom-0 -left-24 size-[30rem]" />
       <FlowLine curve={promiseCurve} start="top 70%" end="bottom 60%" showHead={false} className="z-10" />
