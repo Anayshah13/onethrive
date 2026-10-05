@@ -22,7 +22,7 @@ const ENGAGEMENTS = [
   "Not sure yet",
 ] as const;
 
-const CITIES = ["Mumbai", "Goa", "Bengaluru", "Delhi NCR", "Jaipur", "Dubai", "Bali", "Thailand"] as const;
+const CITIES = ["Mumbai", "Pune", "Goa", "Bengaluru", "Delhi NCR", "Hyderabad", "Jaipur", "Chennai"] as const;
 
 const NEXT_STEPS = [
   { title: "We call you within a day", body: "A quick conversation to understand your team, timelines and budget." },
@@ -213,7 +213,6 @@ function BriefForm() {
                     <Mail className="size-4" />
                   </span>
                 </button>
-                <span className="text-xs text-grey">We reply within one working day.</span>
               </div>
             </motion.form>
           )}
@@ -309,13 +308,6 @@ function ContactCard() {
         {contact.phone}
       </a>
 
-      <div className="relative mt-6 flex items-center gap-2.5 text-sm text-cream/60">
-        <span className="relative grid size-2.5 place-items-center">
-          <span aria-hidden className="pulse-ring absolute inset-0 rounded-full bg-mint" />
-          <span aria-hidden className="size-1.5 rounded-full bg-mint" />
-        </span>
-        Typically reply within one working day
-      </div>
     </div>
   );
 }
@@ -325,7 +317,7 @@ function WhereWeWorkCard() {
     <div className="rounded-[1.75rem] bg-white p-6 shadow-float ring-1 ring-ink/5 sm:p-8">
       <h3 className="font-display text-xl font-light tracking-tight">Where we work</h3>
       <p className="mt-2 text-sm leading-6 text-grey">
-        Mumbai HQ, running programs across India and internationally.
+        Mumbai HQ, running programs across India.
       </p>
       <div className="mt-4 flex flex-wrap gap-2">
         {CITIES.map((city) => (

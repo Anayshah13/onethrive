@@ -6,11 +6,11 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { contact } from "@/data/content";
-import { aboutRoot, aboutSections, headerNav, isHash } from "@/data/site";
+import { aboutRoot, aboutSections, contactRoute, headerNav, isHash } from "@/data/site";
 import { EASE_OUT, gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { ArrowUpRight, Chevron } from "./icons";
 import { lockScroll, scrollToHash } from "./smooth-scroll";
-import { TalkButton, useTalk } from "./talk";
+import { PillButton } from "./ui";
 
 export function Header() {
   const bar = useRef<HTMLDivElement>(null);
@@ -22,7 +22,6 @@ export function Header() {
   const [active, setActive] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const closeTimer = useRef<number | undefined>(undefined);
-  const { setOpen } = useTalk();
 
   useGSAP(
     () => {
@@ -118,7 +117,7 @@ export function Header() {
       <header className="pointer-events-none fixed inset-x-0 top-0 z-50 px-3 pt-3 md:px-6 md:pt-5">
         <div
           ref={bar}
-          className="pointer-events-auto mx-auto flex h-14 w-full max-w-270 items-center justify-between rounded-full bg-white/75 py-1.5 pr-1.5 pl-5 shadow-float ring-1 ring-ink/6 backdrop-blur-xl md:h-16 md:pl-6"
+          className="pointer-events-auto mx-auto flex h-14 w-full max-w-230 items-center justify-between rounded-full bg-white/75 py-1.5 pr-1.5 pl-5 shadow-float ring-1 ring-ink/6 backdrop-blur-xl md:h-16 md:pl-6"
         >
           <Link
             href={onHome ? "#top" : "/"}
@@ -185,9 +184,9 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <TalkButton size="md" className="hidden text-base! sm:inline-flex">
+            <PillButton href={contactRoute.href} size="md" className="hidden text-base! sm:inline-flex">
               Plan your event
-            </TalkButton>
+            </PillButton>
             <button
               type="button"
               className="relative grid size-11 cursor-pointer place-items-center rounded-full bg-ink text-cream lg:hidden"
@@ -299,16 +298,13 @@ export function Header() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, ease: EASE_OUT, delay: 0.45 }}
             >
-              <button
-                type="button"
-                onClick={() => {
-                  toggleMenu();
-                  setOpen(true);
-                }}
-                className="h-14 cursor-pointer rounded-full bg-mint font-semibold text-ink"
+              <Link
+                href={contactRoute.href}
+                onClick={closeMenu}
+                className="grid h-14 place-items-center rounded-full bg-mint font-semibold text-ink"
               >
                 Plan your event
-              </button>
+              </Link>
               <a href={`mailto:${contact.email}`} className="text-center text-sm text-grey">
                 {contact.email}
               </a>

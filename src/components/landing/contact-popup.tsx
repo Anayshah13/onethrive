@@ -5,6 +5,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { contact } from "@/data/content";
 import { EASE_OUT, EASE_SPRING, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { Close, Mail, Phone } from "./icons";
+import { isAutoScrolling } from "./smooth-scroll";
+
+const SEEN_KEY = "ot-contact-popup-seen";
 
 export function ContactPopup() {
   const [open, setOpen] = useState(false);
@@ -12,18 +15,41 @@ export function ContactPopup() {
   const shownRef = useRef(false);
   const closeRef = useRef<HTMLButtonElement>(null);
 
+  /* Opens once per visit, after the reader has lingered in Services; never on a nav-click jump. */
   useGSAP(() => {
+    let timer: number | undefined;
+    const show = () => {
+      if (shownRef.current) return;
+      shownRef.current = true;
+      try {
+        sessionStorage.setItem(SEEN_KEY, "1");
+      } catch {}
+      setOpen(true);
+      st.kill();
+    };
+    try {
+      shownRef.current = sessionStorage.getItem(SEEN_KEY) === "1";
+    } catch {}
+    const disarm = () => {
+      window.clearTimeout(timer);
+      timer = undefined;
+    };
+    const arm = () => {
+      if (shownRef.current || timer !== undefined) return;
+      timer = window.setTimeout(show, 1500);
+    };
     const st = ScrollTrigger.create({
       trigger: "#offer",
-      start: "bottom 70%",
-      onLeave: () => {
-        if (!shownRef.current) {
-          shownRef.current = true;
-          setOpen(true);
-        }
-      },
+      start: "top 35%",
+      end: "bottom 50%",
+      onToggle: (self) => (self.isActive && !isAutoScrolling() ? arm() : disarm()),
+      // A nav-click jump through the section cancels; the reader's own scrolling re-arms.
+      onUpdate: (self) => (isAutoScrolling() ? disarm() : self.isActive && arm()),
     });
-    return () => st.kill();
+    return () => {
+      disarm();
+      st.kill();
+    };
   });
 
   useEffect(() => {
@@ -45,6 +71,7 @@ export function ContactPopup() {
       `Name: ${get("name")}`,
       `Company: ${get("company")}`,
       `Work email: ${get("email")}`,
+      `Phone: ${get("phone")}`,
       `Team size: ${get("size") || "Not sure yet"}`,
       "",
       get("message"),
@@ -158,7 +185,10 @@ export function ContactPopup() {
                         <Field label="Company" name="company" autoComplete="organization" required />
                       </div>
                       <Field label="Work email" name="email" type="email" autoComplete="email" required />
-                      <Field label="Team size" name="size" inputMode="numeric" placeholder="e.g. 40" />
+                      <div className="grid gap-4 sm:grid-cols-2">
+                        <Field label="Phone" name="phone" type="tel" autoComplete="tel" placeholder="+91" required />
+                        <Field label="Team size" name="size" inputMode="numeric" placeholder="e.g. 40" />
+                      </div>
                       <label className="flex flex-col gap-1.5 text-sm font-medium">
                         What should the day do?
                         <textarea

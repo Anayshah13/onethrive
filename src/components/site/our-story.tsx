@@ -2,14 +2,21 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { activityCount, crew, stats } from "@/data/content";
+import { activityCount, stats } from "@/data/content";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { Crew } from "@/components/landing/crew";
 import { Glow, PixelCluster } from "@/components/landing/decor";
 import { Reveal } from "@/components/landing/reveal";
 import { AboutNext, AboutTabs, PageHero } from "@/components/site/page-kit";
 
-/* Collage placement per photo (same order as crew.photos). Speed is the scrubbed parallax in px. */
+/* Event photos for the collage: the crew photos already appear in the Crew section further down. */
+const COLLAGE = [
+  { src: "/photos/offsite-talk.jpg", alt: "Speaker presenting to the team during an offsite session" },
+  { src: "/photos/laughter.jpg", alt: "Colleagues laughing together during a laughter yoga session in the office" },
+  { src: "/photos/tug-of-war.jpg", alt: "Teammates pulling together in a tug of war" },
+] as const;
+
+/* Collage placement per photo (same order as COLLAGE). Speed is the scrubbed parallax in px. */
 const FRAMES = [
   { className: "left-0 top-0 z-10 w-[62%] -rotate-3", speed: -36, sizes: "(min-width: 768px) 26vw, 62vw" },
   { className: "right-0 top-[14%] z-20 w-[46%] rotate-[5deg]", speed: 50, sizes: "(min-width: 768px) 20vw, 46vw" },
@@ -17,7 +24,7 @@ const FRAMES = [
 ] as const;
 
 const eventsStat = stats.find((s) => s.label === "events curated");
-const participantsStat = stats.find((s) => s.label === "participants");
+const participantsStat = stats.find((s) => s.label === "participants engaged");
 
 /* Undated chapters: the shape of how OneThrive grew, without inventing years or names. */
 const chapters = [
@@ -46,7 +53,7 @@ const chapters = [
     title: "Today",
     body: `${eventsStat ? eventsStat.value + eventsStat.suffix : "50+"} events curated, ${
       participantsStat ? participantsStat.value.toLocaleString("en-IN") + participantsStat.suffix : "2000+"
-    } participants, and a playbook of ${activityCount}+ activities. Still one team, still in the room.`,
+    } participants engaged, and a playbook of ${activityCount}+ activities. Still one team, still in the room.`,
   },
 ] as const;
 
@@ -128,7 +135,7 @@ export function OurStory() {
 
         <div className="mx-auto grid w-full max-w-[1240px] items-center gap-16 px-5 md:grid-cols-[1fr_1fr] md:gap-12 md:px-8 lg:gap-20">
           <div ref={collageRef} className="relative mx-auto aspect-[1/1.12] w-full max-w-[520px]">
-            {crew.photos.map((photo, i) => {
+            {COLLAGE.map((photo, i) => {
               const frame = FRAMES[i];
               return (
                 <div key={photo.src} data-photo data-speed={frame.speed} className={`absolute ${frame.className}`}>
@@ -139,7 +146,7 @@ export function OurStory() {
                         alt={photo.alt}
                         fill
                         sizes={frame.sizes}
-                        className={`object-cover ${i === 0 ? "object-[50%_60%]" : "object-center"}`}
+                        className="object-cover"
                       />
                     </div>
                   </div>

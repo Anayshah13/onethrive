@@ -1,331 +1,180 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { activities, activityCount, offers } from "@/data/content";
-import { EASE_OUT, EASE_SPRING, gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
-import { offerCurve } from "./curves";
-import { FlowLine, Glow, PixelCluster } from "./decor";
+import { EASE_OUT, EASE_SPRING } from "@/lib/gsap";
+import { Glow } from "./decor";
 import { Close } from "./icons";
 import { Reveal } from "./reveal";
 import { lockScroll } from "./smooth-scroll";
 import { TextLink } from "./ui";
 
-type Offer = (typeof offers)[number];
+type Service = (typeof offers)[number];
 
-/* Bricolage Grotesque, pulled narrow and set at display optical size. */
-const DISPLAY = "font-offer [font-variation-settings:'wdth'_80,'opsz'_96] tracking-[-0.025em]";
-const KICKER = "font-offer text-[0.68rem] font-semibold tracking-[0.16em] uppercase";
-
+const total = String(offers.length).padStart(2, "0");
 const num = (i: number) => String(i + 1).padStart(2, "0");
 
+const KICKER = "text-[0.7rem] font-medium tracking-[0.18em] uppercase tabular-nums";
+
+function Tags({ tags, tone }: { tags: Service["tags"]; tone: "light" | "dark" }) {
+  const chip =
+    tone === "dark" ? "border-cream/25 text-cream/85" : "border-emerald/15 bg-mint-wash text-emerald-deep";
+  return (
+    <ul className="flex flex-wrap gap-2" aria-label="Includes">
+      {tags.map((tag) => (
+        <li key={tag} className={`rounded-full border px-3 py-1 text-xs font-medium ${chip}`}>
+          {tag}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /*
- * Puzzle piece in objectBoundingBox units: a socket bitten out of the top edge
- * and a tab pushing out of the right edge. Tuned for a 4:3 box.
+ * Desktop: five full-height photo panels in a row. The active one widens to
+ * reveal its copy; hover, focus or click selects it, arrow keys move between panels.
  */
-const PUZZLE =
-  "M0 0.06 Q0 0 0.045 0 L0.37 0 A0.085 0.113 0 1 0 0.51 0 L0.815 0 Q0.86 0 0.86 0.06 L0.86 0.36 A0.1 0.14 0 1 1 0.86 0.6 L0.86 0.94 Q0.86 1 0.815 1 L0.045 1 Q0 1 0 0.94 Z";
+function ServicePanels() {
+  const [active, setActive] = useState(0);
+  const baseId = useId();
+  const buttons = useRef<Array<HTMLButtonElement | null>>([]);
 
-function ShapeDefs() {
-  return (
-    <svg width="0" height="0" aria-hidden className="absolute">
-      <defs>
-        <clipPath id="offer-puzzle" clipPathUnits="objectBoundingBox">
-          <path d={PUZZLE} />
-        </clipPath>
-      </defs>
-    </svg>
-  );
-}
-
-/* Perforated postage-stamp edge: half-circle bites every 3r around the border. */
-const STAMP_R = 7;
-const stampMask = `radial-gradient(${STAMP_R}px, #0000 98%, #000) round ${-1.5 * STAMP_R}px ${-1.5 * STAMP_R}px / ${3 * STAMP_R}px ${3 * STAMP_R}px, linear-gradient(#000 0 0) no-repeat 50% / calc(100% - ${3 * STAMP_R}px) calc(100% - ${3 * STAMP_R}px)`;
-
-/* Ticket: two notches punched at the tear line (72% across). */
-const ticketMask =
-  "radial-gradient(circle at 72% 0, #0000 13px, #000 13.5px) top / 100% 51% no-repeat, radial-gradient(circle at 72% 100%, #0000 13px, #000 13.5px) bottom / 100% 51% no-repeat";
-
-/* Pointer-driven 3D tilt shared by every card. */
-function Tilt({ className = "", children }: { className?: string; children: React.ReactNode }) {
-  const px = useMotionValue(0);
-  const py = useMotionValue(0);
-  const sx = useSpring(px, { stiffness: 180, damping: 18, mass: 0.4 });
-  const sy = useSpring(py, { stiffness: 180, damping: 18, mass: 0.4 });
-  const rotateY = useTransform(sx, [-0.5, 0.5], [-6, 6]);
-  const rotateX = useTransform(sy, [-0.5, 0.5], [6, -6]);
-
-  const onMove = (event: React.PointerEvent<HTMLElement>) => {
-    if (event.pointerType !== "mouse" || !window.matchMedia("(pointer: fine)").matches) return;
-    if (prefersReducedMotion()) return;
-    const r = event.currentTarget.getBoundingClientRect();
-    px.set((event.clientX - r.left) / r.width - 0.5);
-    py.set((event.clientY - r.top) / r.height - 0.5);
-  };
-  const onLeave = () => {
-    px.set(0);
-    py.set(0);
+  const onKeyDown = (event: React.KeyboardEvent<HTMLUListElement>) => {
+    const steps: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+    let next: number | undefined;
+    if (event.key in steps) next = (active + steps[event.key] + offers.length) % offers.length;
+    else if (event.key === "Home") next = 0;
+    else if (event.key === "End") next = offers.length - 1;
+    if (next === undefined) return;
+    event.preventDefault();
+    setActive(next);
+    buttons.current[next]?.focus();
   };
 
   return (
-    <div className={`[perspective:1000px] ${className}`}>
-      <motion.article
-        onPointerMove={onMove}
-        onPointerLeave={onLeave}
-        style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-        className="group h-full"
-      >
-        {children}
-      </motion.article>
-    </div>
-  );
-}
+    <ul onKeyDown={onKeyDown} className="hidden h-[clamp(30rem,64vh,36rem)] gap-3 lg:flex">
+      {offers.map((offer, i) => {
+        const on = i === active;
+        const detailsId = `${baseId}-${i}`;
+        return (
+          <li
+            key={offer.title}
+            onMouseEnter={() => setActive(i)}
+            style={{ flexGrow: on ? 4.2 : 1 }}
+            className="relative min-w-0 basis-0 overflow-hidden rounded-[1.5rem] bg-ink shadow-float transition-[flex-grow] duration-700 ease-spring motion-reduce:transition-none"
+          >
+            <Image
+              src={offer.image}
+              alt=""
+              fill
+              sizes="(min-width: 1280px) 600px, 50vw"
+              className={`object-cover transition-transform duration-1000 ease-spring motion-reduce:transition-none ${on ? "scale-100" : "scale-110"}`}
+            />
+            <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-ink/90 via-ink/35 to-ink/10" />
+            <div
+              aria-hidden
+              className={`absolute inset-0 bg-ink/45 transition-opacity duration-700 ${on ? "opacity-0" : "opacity-100"}`}
+            />
 
-function Photo({ offer, sizes, className = "" }: { offer: Offer; sizes: string; className?: string }) {
-  return (
-    <Image
-      src={offer.image}
-      alt=""
-      fill
-      sizes={sizes}
-      className={`object-cover transition-transform duration-700 ease-out group-hover:scale-[1.07] ${className}`}
-    />
-  );
-}
-
-/* 01 · Offsite & MICE: a perforated travel stamp with a round postmark. */
-function StampCard({ offer, index }: { offer: Offer; index: number }) {
-  return (
-    <div className="drop-shadow-[0_18px_28px_rgba(27,97,72,0.18)] transition-transform duration-500 ease-out group-hover:-translate-y-1.5 sm:-rotate-2">
-      <div className="relative bg-white p-5 lg:p-4" style={{ mask: stampMask, WebkitMask: stampMask }}>
-        <div className="relative aspect-[4/3] overflow-hidden ring-1 ring-ink/10">
-          <Photo offer={offer} sizes="(min-width: 1024px) 420px, (min-width: 640px) 45vw, 90vw" />
-          <span className={`absolute top-2 left-2 rounded-sm bg-cream/90 px-1.5 py-0.5 text-ink ${KICKER}`}>
-            {num(index)}
-          </span>
-        </div>
-        <svg
-          aria-hidden
-          viewBox="0 0 100 100"
-          className="pointer-events-none absolute top-2 right-2 w-20 -rotate-12 text-emerald/80 mix-blend-multiply md:w-24 lg:w-16"
-        >
-          <defs>
-            <path id="offer-postmark-arc" d="M50 50 m-35 0 a35 35 0 1 1 70 0 a35 35 0 1 1 -70 0" />
-          </defs>
-          <circle cx="50" cy="50" r="46" fill="none" stroke="currentColor" strokeWidth="2.5" />
-          <circle cx="50" cy="50" r="27" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <text fill="currentColor" fontSize="10.5" fontWeight="700" letterSpacing="2.4">
-            <textPath href="#offer-postmark-arc">ONETHRIVE · OFFSITE ·</textPath>
-          </text>
-          <path d="M34 46 q8 -6 16 0 t16 0 M34 54 q8 -6 16 0 t16 0" fill="none" stroke="currentColor" strokeWidth="2" />
-        </svg>
-        <div className="flex items-end justify-between gap-3 pt-4">
-          <h3 className={`${DISPLAY} text-[1.9rem] leading-[0.95] font-bold text-ink md:text-4xl lg:text-2xl`}>{offer.title}</h3>
-          <span className={`${KICKER} shrink-0 pb-1 text-emerald`}>{offer.kicker}</span>
-        </div>
-        <p className="mt-2 max-w-[38ch] text-sm leading-relaxed text-grey">{offer.blurb}</p>
-      </div>
-    </div>
-  );
-}
-
-/* 02 · Team Building: a puzzle piece, because the team is the picture. */
-function PuzzleCard({ offer, index }: { offer: Offer; index: number }) {
-  return (
-    <div className="h-full rounded-[2rem] bg-mint-soft p-4 pb-6 ring-1 ring-emerald/10 transition-[transform,box-shadow] duration-500 ease-out group-hover:-translate-y-1.5 group-hover:shadow-lift">
-      <div className="relative aspect-[4/3]" style={{ clipPath: "url(#offer-puzzle)" }}>
-        <Photo offer={offer} sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw" />
-      </div>
-      <div className="mt-4 flex items-baseline gap-3 px-1">
-        <span className={`${DISPLAY} text-5xl font-extrabold text-emerald/25 lg:text-4xl`}>{num(index)}</span>
-        <div>
-          <p className={`${KICKER} text-emerald`}>{offer.kicker}</p>
-          <h3 className={`${DISPLAY} mt-0.5 text-3xl leading-none font-bold text-ink lg:text-2xl`}>{offer.title}</h3>
-        </div>
-      </div>
-      <p className="mt-3 px-1 text-sm leading-relaxed text-ink/70">{offer.blurb}</p>
-    </div>
-  );
-}
-
-/* 03 · Artist Booking: a proscenium arch with a string of stage bulbs. */
-function ArchCard({ offer, index }: { offer: Offer; index: number }) {
-  /* Bulbs ride just inside the photo's arch: centre (50%, 8.25rem), radii (50% - 1.45rem, 6.8rem). */
-  const bulbs = Array.from({ length: 9 }, (_, i) => {
-    const a = Math.PI - (Math.PI * i) / 8;
-    const c = Math.round(Math.cos(a) * 1000) / 1000;
-    const sn = Math.round(Math.sin(a) * 1000) / 1000;
-    return { left: `calc(50% + ${c} * (50% - 1.45rem))`, top: `calc(8.25rem - ${sn} * 6.8rem)` };
-  });
-  return (
-    <div className="flex h-full flex-col rounded-b-[1.75rem] bg-ink [border-top-left-radius:50%_8.5rem] [border-top-right-radius:50%_8.5rem] p-3 pb-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] transition-[transform,box-shadow] duration-500 ease-out group-hover:-translate-y-1.5 group-hover:shadow-lift">
-      <div className="relative flex flex-1 flex-col">
-        {bulbs.map((b, i) => (
-          <span
-            key={i}
-            aria-hidden
-            style={b}
-            className={`pointer-events-none absolute z-10 size-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-mint shadow-[0_0_10px_2px_rgba(0,255,171,0.55)] transition-opacity duration-500 group-hover:opacity-100 ${i % 2 ? "opacity-50" : "opacity-95"}`}
-          />
-        ))}
-        <div className="relative m-3 aspect-[3/4] overflow-hidden rounded-b-xl [border-top-left-radius:50%_7.5rem] [border-top-right-radius:50%_7.5rem] lg:aspect-auto lg:min-h-[16rem] lg:flex-1">
-          <Photo offer={offer} sizes="(min-width: 1024px) 280px, (min-width: 640px) 45vw, 90vw" />
-        </div>
-      </div>
-      <div className="mt-2 px-3 text-center">
-        <p className={`${KICKER} text-mint/70`}>
-          {num(index)} · {offer.kicker}
-        </p>
-        <h3 className={`${DISPLAY} mt-2 text-[2.1rem] leading-[0.95] font-bold text-mint`}>{offer.title}</h3>
-        <p className="mx-auto mt-2 max-w-[28ch] text-sm leading-relaxed text-cream/65">{offer.blurb}</p>
-      </div>
-    </div>
-  );
-}
-
-/* 04 · Day Outing: a taped polaroid, "to the last photo". */
-function PolaroidCard({ offer, index }: { offer: Offer; index: number }) {
-  return (
-    <div className="relative transition-transform duration-500 ease-out group-hover:-translate-y-1.5 group-hover:rotate-0 sm:rotate-[2.5deg]">
-      <span
-        aria-hidden
-        className="absolute -top-3 left-1/2 z-10 h-7 w-24 -translate-x-1/2 -rotate-3 bg-mint/45 shadow-sm backdrop-blur-[1px]"
-      />
-      <div className="bg-white p-3 pb-5 shadow-float ring-1 ring-ink/5">
-        <div className="relative aspect-square overflow-hidden bg-mint-wash lg:aspect-[4/3]">
-          <Photo offer={offer} sizes="(min-width: 1024px) 320px, (min-width: 640px) 45vw, 90vw" className="saturate-[1.1]" />
-        </div>
-        <div className="px-1 pt-4">
-          <div className="flex items-baseline justify-between gap-2">
-            <h3 className={`${DISPLAY} text-3xl leading-none font-bold text-ink lg:text-2xl`}>{offer.title}</h3>
-            <span className="font-serif text-xl lg:text-base text-emerald italic">no. {num(index)}</span>
-          </div>
-          <p className="mt-2 font-serif text-lg leading-snug text-ink/70 italic lg:text-base">{offer.blurb}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* 05 · Event Production: an admit-one ticket with a tear-off stub. */
-function TicketCard({ offer, index }: { offer: Offer; index: number }) {
-  return (
-    <div className="drop-shadow-[0_18px_28px_rgba(18,63,48,0.25)] transition-transform duration-500 ease-out group-hover:-translate-y-1.5">
-      <div
-        className="relative flex min-h-[15rem] overflow-hidden rounded-[1.4rem] bg-emerald-deep sm:min-h-[17rem] lg:min-h-[15rem]"
-        style={{ mask: ticketMask, WebkitMask: ticketMask }}
-      >
-        <div className="relative w-[72%] overflow-hidden">
-          <Photo offer={offer} sizes="(min-width: 1024px) 320px, (min-width: 640px) 60vw, 70vw" />
-          <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-emerald-deep via-emerald-deep/55 to-transparent" />
-          <div className="absolute inset-x-0 bottom-0 p-4 sm:p-5">
-            <p className={`${KICKER} text-mint`}>{offer.kicker}</p>
-            <h3 className={`${DISPLAY} mt-1 text-[1.75rem] leading-[0.95] font-bold text-cream sm:text-4xl lg:text-3xl`}>
-              {offer.title}
+            <h3>
+              <button
+                ref={(el) => {
+                  buttons.current[i] = el;
+                }}
+                type="button"
+                aria-expanded={on}
+                aria-controls={detailsId}
+                onFocus={() => setActive(i)}
+                onClick={() => setActive(i)}
+                className="absolute inset-0 z-20 cursor-pointer rounded-[1.5rem] focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-mint"
+              >
+                <span className="sr-only">{offer.title}</span>
+              </button>
             </h3>
-            <p className="mt-2 max-w-[34ch] text-[0.8rem] leading-relaxed text-cream/75 sm:text-sm">{offer.blurb}</p>
-          </div>
-        </div>
-        <div
-          aria-hidden
-          className="absolute inset-y-4 left-[72%] border-l-2 border-dashed border-cream/30"
-        />
-        <div className="flex flex-1 flex-col items-center justify-between py-5 text-mint">
-          <span className={`${DISPLAY} text-3xl font-extrabold sm:text-4xl`}>{num(index)}</span>
-          <span className={`${KICKER} [writing-mode:vertical-rl] rotate-180 text-cream/70`}>Admit the whole team</span>
-          <span aria-hidden className="flex gap-[2px]">
-            {[3, 1, 2, 1, 3, 2, 1].map((w, i) => (
-              <span key={i} className="h-5 bg-mint/70" style={{ width: w }} />
-            ))}
-          </span>
-        </div>
-      </div>
-    </div>
+
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center p-6 text-cream/80"
+            >
+              <span className={`${KICKER} shrink-0`}>
+                {num(i)}
+                <span className={`transition-opacity duration-500 ${on ? "opacity-60" : "opacity-0"}`}> / {total}</span>
+              </span>
+              <span
+                className={`ml-4 h-px flex-1 bg-cream/25 transition-opacity duration-500 ${on ? "opacity-100" : "opacity-0"}`}
+              />
+            </div>
+
+            <span
+              aria-hidden
+              className={`pointer-events-none absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rotate-180 font-display text-lg font-medium whitespace-nowrap text-cream [writing-mode:vertical-rl] transition-opacity duration-300 ${on ? "opacity-0" : "opacity-100 delay-200"}`}
+            >
+              {offer.title}
+            </span>
+
+            <div
+              id={detailsId}
+              aria-hidden={!on}
+              className={`pointer-events-none absolute bottom-0 left-0 z-10 w-[24rem] p-7 transition-[opacity,transform] duration-500 ease-out motion-reduce:transition-none xl:w-[30rem] xl:p-8 ${on ? "translate-y-0 opacity-100 delay-200" : "translate-y-3 opacity-0"}`}
+            >
+              <p
+                aria-hidden
+                className="font-display text-[2.25rem] leading-[1.05] font-semibold tracking-tight text-cream xl:text-[2.6rem]"
+              >
+                {offer.title}
+              </p>
+              <p className="mt-3 text-[0.95rem] leading-relaxed text-cream/75">{offer.blurb}</p>
+              <div className="mt-5">
+                <Tags tags={offer.tags} tone="dark" />
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
-/* 06 · Wellness: a slow, breathing pebble. */
-const BREATH = [
-  "58% 42% 46% 54% / 48% 56% 44% 52%",
-  "44% 56% 58% 42% / 56% 44% 56% 44%",
-  "52% 48% 40% 60% / 42% 58% 48% 52%",
-  "58% 42% 46% 54% / 48% 56% 44% 52%",
-];
-
-function PebbleCard({ offer, index }: { offer: Offer; index: number }) {
-  const reduce = useReducedMotion();
-  const breathe = reduce ? undefined : { borderRadius: BREATH };
-  const breatheT = { duration: 14, ease: "easeInOut" as const, repeat: Infinity };
+/* Below lg: a clean stack of photo cards. */
+function ServiceCards() {
   return (
-    <motion.div
-      style={{ borderRadius: BREATH[0] }}
-      animate={breathe}
-      transition={breatheT}
-      className="bg-mint/90 px-7 py-10 transition-shadow duration-500 group-hover:shadow-lift sm:px-12 sm:py-12 lg:px-9 lg:py-8"
-    >
-      <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8 lg:gap-5">
-        <motion.div
-          style={{ borderRadius: BREATH[2] }}
-          animate={reduce ? undefined : { borderRadius: [BREATH[2], BREATH[0], BREATH[1], BREATH[2]] }}
-          transition={breatheT}
-          className="relative aspect-square w-40 shrink-0 overflow-hidden ring-4 ring-cream/60 sm:w-48 lg:w-32"
-        >
-          <Photo offer={offer} sizes="200px" />
-        </motion.div>
-        <div className="text-center sm:text-left">
-          <p className={`${KICKER} text-emerald-deep/70`}>
-            {num(index)} · {offer.kicker}
-          </p>
-          <h3 className={`${DISPLAY} mt-1.5 text-[2.6rem] leading-[0.9] font-bold text-emerald-deep md:text-5xl lg:text-4xl`}>
-            {offer.title}
-          </h3>
-          <p className="mx-auto mt-3 max-w-[36ch] text-sm leading-relaxed text-emerald-deep/80 sm:mx-0">{offer.blurb}</p>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* Each event gets its own silhouette and its own spot in the bento. */
-/* Desktop is two rows (arch spans both) so the whole section fits in about one screen. */
-const LAYOUT: Array<{ Card: (p: { offer: Offer; index: number }) => React.ReactNode; className: string }> = [
-  { Card: StampCard, className: "lg:col-span-3 lg:col-start-1 lg:row-start-1" },
-  { Card: PuzzleCard, className: "sm:mt-10 lg:mt-0 lg:col-span-3 lg:col-start-4 lg:row-start-1" },
-  { Card: ArchCard, className: "lg:col-span-3 lg:col-start-10 lg:row-span-2 lg:row-start-1" },
-  { Card: PolaroidCard, className: "sm:mt-10 lg:mt-0 lg:col-span-3 lg:col-start-7 lg:row-start-1" },
-  { Card: TicketCard, className: "sm:col-span-2 lg:col-span-4 lg:col-start-1 lg:row-start-2 lg:self-center" },
-  { Card: PebbleCard, className: "sm:col-span-2 lg:col-span-5 lg:col-start-5 lg:row-start-2 lg:self-center" },
-];
-
-/* Chunky, blocky quote mark: a rounded block with a slanted tail, drawn twice. */
-function QuoteMark({ closing = false, className = "" }: { closing?: boolean; className?: string }) {
-  const glyph = (x: number) => (
-    <g transform={`translate(${x} 0)`}>
-      <rect x="0" y="24" width="42" height="36" rx="9" />
-      <path d="M8 28 L26 3 L40 3 L30 28 Z" stroke="var(--line)" strokeWidth="6" strokeLinejoin="round" />
-    </g>
-  );
-  return (
-    <svg
-      data-quote
-      aria-hidden
-      viewBox="-3 0 104 63"
-      className={`pointer-events-none absolute z-20 w-14 md:w-[112px] ${className}`}
-      fill="var(--line)"
-    >
-      <g transform={closing ? "rotate(180 50 31.5)" : undefined}>
-        {glyph(0)}
-        {glyph(54)}
-      </g>
-    </svg>
+    <Reveal as="ul" stagger={0.08} className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:hidden">
+      {offers.map((offer, i) => {
+        const wide = i === offers.length - 1;
+        return (
+          <li
+            key={offer.title}
+            className={`flex min-w-0 flex-col overflow-hidden rounded-[1.5rem] bg-white shadow-float ring-1 ring-ink/5 ${wide ? "sm:col-span-2" : ""}`}
+          >
+            <div className={`relative aspect-[16/10] bg-mint-wash ${wide ? "sm:aspect-[21/9]" : ""}`}>
+              <Image
+                src={offer.image}
+                alt=""
+                fill
+                sizes={wide ? "(min-width: 640px) 90vw, 100vw" : "(min-width: 640px) 45vw, 100vw"}
+                className="object-cover"
+              />
+              <span
+                className={`absolute top-4 left-4 rounded-full bg-cream/90 px-2.5 py-1 text-ink backdrop-blur-sm ${KICKER}`}
+              >
+                {num(i)} / {total}
+              </span>
+            </div>
+            <div className="flex flex-1 flex-col p-6">
+              <h3 className="font-display text-2xl leading-tight font-semibold tracking-tight text-ink">
+                {offer.title}
+              </h3>
+              <p className="mt-2 text-[0.95rem] leading-relaxed text-grey">{offer.blurb}</p>
+              <div className="mt-auto pt-5">
+                <Tags tags={offer.tags} tone="light" />
+              </div>
+            </div>
+          </li>
+        );
+      })}
+    </Reveal>
   );
 }
 
@@ -426,79 +275,37 @@ function ActivitiesSheet({ open, onClose }: { open: boolean; onClose: () => void
 
 export function Offer() {
   const [open, setOpen] = useState(false);
-  const gridRef = useRef<HTMLDivElement>(null);
   const close = useCallback(() => setOpen(false), []);
 
-  useGSAP(
-    () => {
-      if (prefersReducedMotion()) return;
-      const grid = gridRef.current;
-      if (!grid) return;
-      gsap.fromTo(
-        grid.querySelectorAll("[data-quote]"),
-        { scale: 0.6, rotate: -12 },
-        {
-          scale: 1,
-          rotate: 0,
-          ease: "none",
-          scrollTrigger: { trigger: grid, start: "top 90%", end: "top 35%", scrub: 0.6 },
-        },
-      );
-    },
-    { scope: gridRef },
-  );
-
   return (
-    <section id="offer" className="relative isolate py-12 md:py-14 lg:py-10">
-      <Glow className="-z-10 top-24 -left-20 size-[28rem]" />
-      <Glow tone="soft" className="-z-10 bottom-10 -right-24 size-[32rem]" />
-      <PixelCluster cols={12} rows={7} seed={11} className="absolute top-16 right-4 md:right-10" />
-      <PixelCluster cols={10} rows={6} seed={29} className="absolute bottom-20 left-2 hidden md:block" />
-      <FlowLine
-        className="z-0"
-        start="top 75%"
-        end="bottom 70%"
-        curve={offerCurve}
-        showHead={false}
-      />
-      <ShapeDefs />
-
-
-      <div className="relative z-10 mx-auto w-full max-w-[1240px] px-5 md:px-8">
-        <Reveal as="header" className="mx-auto max-w-2xl text-center">
-          <h2 className="text-[clamp(2.75rem,5vw,4.5rem)] leading-[0.95] text-ink">
-            <span className={`${DISPLAY} font-bold`}>What we</span>{" "}
-            <span className="font-serif font-normal text-emerald italic">offer</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-md text-grey text-balance">
-            Six ways we bring a team together — each one shaped around yours.
-          </p>
+    <section id="offer" className="relative isolate overflow-x-clip py-16 md:py-20">
+      <Glow tone="soft" className="-z-10 top-10 -right-24 size-[30rem]" />
+      <div className="relative z-10 mx-auto w-full max-w-[1240px] px-4 sm:px-5 md:px-8">
+        <Reveal
+          as="header"
+          className="grid gap-6 border-b border-ink/10 pb-8 md:pb-10 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-12"
+        >
+          <div>
+            <p className="eyebrow">Services</p>
+            <h2 className="mt-5 font-display text-[clamp(2.5rem,5vw,4.25rem)] leading-[0.95] font-semibold tracking-tight text-ink">
+              What we <span className="font-serif font-normal text-emerald italic">do</span>
+            </h2>
+          </div>
+          <div className="lg:justify-self-end">
+            <p className="max-w-md text-[1.05rem] leading-relaxed text-balance text-grey">
+              Five disciplines, one partner. Every programme is designed around your people, your goals and your
+              calendar, then delivered end to end by our team.
+            </p>
+            <TextLink onClick={() => setOpen(true)} className="mt-4">
+              Browse all {activityCount}+ activities
+            </TextLink>
+          </div>
         </Reveal>
 
-        <div ref={gridRef} className="relative mx-auto mt-14 max-w-[1120px] lg:mt-12">
-          <QuoteMark className="-top-9 -left-1 origin-bottom-right md:-top-16 md:-left-12" />
-          <QuoteMark closing className="-right-1 -bottom-9 origin-top-left md:-right-12 md:-bottom-16" />
-
-          <Reveal
-            stagger={0.08}
-            className="relative z-10 grid grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 lg:grid-cols-12 lg:gap-x-5 lg:gap-y-6"
-          >
-            {offers.map((offer, index) => {
-              const { Card, className } = LAYOUT[index % LAYOUT.length];
-              return (
-                <Tilt key={offer.title} className={`min-w-0 ${className}`}>
-                  <Card offer={offer} index={index} />
-                </Tilt>
-              );
-            })}
-          </Reveal>
-        </div>
-
-        <Reveal className="mt-16 text-center md:mt-24">
-          <TextLink onClick={() => setOpen(true)}>
-            Browse all {activityCount}+ activities
-          </TextLink>
+        <Reveal className="mt-10 md:mt-12">
+          <ServicePanels />
         </Reveal>
+        <ServiceCards />
       </div>
 
       <ActivitiesSheet open={open} onClose={close} />

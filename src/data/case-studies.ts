@@ -15,6 +15,23 @@ export type WriteUp = {
   conclusion: string;
 };
 
+/* Skimmable digest of a write-up, used by the detail page. Every line is lifted or condensed
+   from that study's own `writeUp` copy; nothing here adds facts the write-up doesn't state. */
+export type Highlights = {
+  /** One line each: the problem, what OneThrive did, how it landed. */
+  glance: { challenge: string; approach: string; outcome: string };
+  /** The flow of the day / programme, in order. */
+  steps: string[];
+  /** Everything OneThrive took off the client's plate. */
+  handled: string[];
+  /** Short result bullets. */
+  takeaways: string[];
+  /** Reported client feedback, as written in the results copy. */
+  feedback: string;
+  /** The single line worth remembering, from the conclusion. */
+  statement: string;
+};
+
 export type CaseStudy = {
   id: number;
   client: string;
@@ -24,6 +41,7 @@ export type CaseStudy = {
   location?: string;
   objective?: string;
   writeUp?: WriteUp;
+  highlights?: Highlights;
   cover?: Media;
   photos: Media[];
   video?: { src: string; poster: string };
@@ -53,6 +71,34 @@ export const caseStudies: CaseStudy[] = [
         "The outing gave Zilo's team a chance to step away from their usual work environment and simply enjoy being together. Employees from different departments got to interact through the team activities, while the Karaoke and DJ experiences gave the day a more celebratory finish. The HR team described the experience as both \"memorable\" and \"well organized,\" reflecting how smoothly the day came together despite the packed schedule.",
       conclusion:
         "Zilo already had the destination, travel and stay figured out. OneThrive filled in everything that happened in between into a day packed with interaction, entertainment and shared experiences. It's a good example of how the right activities, placed at the right moments, can turn dead time between meals into the best part of the trip.",
+    },
+    highlights: {
+      glance: {
+        challenge: "Make a staycation feel like more than a staycation, and get departments spending time together.",
+        approach: "A tailored itinerary of team building, Karaoke and a Bolly Techno DJ Night, with mixed-department teams.",
+        outcome: "A packed, celebratory day the HR team called “memorable” and “well organized.”",
+      },
+      steps: [
+        "Built a tailored itinerary around the available schedule",
+        "Mixed employees from different departments into teams for team building",
+        "Set up a Karaoke session for the team",
+        "Closed out the day with a Bolly Techno DJ Night before everyone headed home",
+      ],
+      handled: [
+        "Itinerary & activity flow",
+        "Equipment",
+        "Expert facilitation",
+        "Karaoke setup",
+        "Bolly Techno DJ Night",
+        "End-to-end logistics",
+      ],
+      takeaways: [
+        "Employees from different departments interacted through the team activities",
+        "Karaoke and the DJ gave the day a more celebratory finish",
+        "The day came together smoothly despite the packed schedule",
+      ],
+      feedback: "The HR team described the experience as both “memorable” and “well organized.”",
+      statement: "The right activities, placed at the right moments, can turn dead time between meals into the best part of the trip.",
     },
     cover: { src: "/photos/offsite-group.jpg", alt: "The Zilo team gathered on the lawn for a group photo during their outing" },
     photos: [
@@ -88,6 +134,32 @@ export const caseStudies: CaseStudy[] = [
       conclusion:
         "What started as a one-off session turned into proof of concept. Awfis is now working with OneThrive to bring the same energy to its other coworking spaces nationwide, backed by a session that fixed a turnout problem they had struggled with for a while.",
     },
+    highlights: {
+      glance: {
+        challenge: "Members from many companies rarely mixed, and past events at this location had drawn low interest.",
+        approach: "A high-engagement session: an energetic mix of games to meet, collaborate and compete across companies.",
+        outcome: "Members from several companies joined in, and Awfis is taking the format to its other spaces.",
+      },
+      steps: [
+        "Designed the session specifically around the participation challenge",
+        "Swapped a conventional workshop for an energetic mix of games",
+        "Helped spread the word within the space through marketing and communication",
+        "Facilitated the activities on-ground",
+      ],
+      handled: [
+        "Event flow",
+        "Equipment",
+        "On-ground facilitation",
+        "Marketing & communication support",
+      ],
+      takeaways: [
+        "People started joining in steadily as the session went on",
+        "A good number were trying a Team Building activity for the very first time",
+        "Many said they'd happily come back for another one",
+      ],
+      feedback: "The success gave the Awfis Community team a format they could confidently consider replicating across other centres.",
+      statement: "What started as a one-off session turned into proof of concept.",
+    },
     cover: { src: "/photos/office-game.jpg", alt: "Awfis members in a circle as a OneThrive host briefs the next game" },
     photos: [
       { src: g("team-building", "38"), alt: "Member balancing a red cup on his forehead during a coworking game" },
@@ -117,6 +189,31 @@ export const caseStudies: CaseStudy[] = [
       conclusion:
         "By bringing together movement, breathing and mindfulness in a single experience, OneThrive created a practical wellness intervention that left the faculty feeling lighter, calmer and better equipped to handle the everyday pressures of work.",
     },
+    highlights: {
+      glance: {
+        challenge: "Help faculty and staff de-stress from everyday academic responsibilities and simply slow down.",
+        approach: "A Stress Management Workshop combining movement, mindfulness and relaxation, led by a facilitator with 16+ years of experience.",
+        outcome: "Professors left noticeably lighter, with exercises to carry into their daily routine.",
+      },
+      steps: [
+        "An icebreaker to get everyone involved",
+        "Desk stretches to release physical tension",
+        "Guided meditation",
+        "Breathing exercises to bring the session to a calm close",
+      ],
+      handled: [
+        "Full session flow on campus",
+        "Facilitator with 16+ years of experience",
+        "Simple, low-pressure structure for first-timers",
+      ],
+      takeaways: [
+        "Professors engaged actively through every part of the session",
+        "They left feeling noticeably lighter than when they walked in",
+        "Many found the breathing and stretching exercises useful enough to carry into their daily routine",
+      ],
+      feedback: "The Principal, Vice Principal, and TPO all described the session as refreshing, calling it an enjoyable experience for the faculty.",
+      statement: "A practical wellness intervention that left the faculty feeling lighter, calmer and better equipped to handle the everyday pressures of work.",
+    },
     cover: { src: g("wellness", "14"), alt: "DJSCE faculty reaching overhead in a stretch around the boardroom table" },
     photos: [
       { src: g("wellness", "05"), alt: "Professors standing at the boardroom table for a guided arm stretch" },
@@ -145,6 +242,36 @@ export const caseStudies: CaseStudy[] = [
         "The event ran seamlessly across both locations, with no mismanagement despite the colossal scale. BDO's HR team specifically appreciated not having to worry about the operational details themselves, something they'd typically have to manage internally, and called the event excellently coordinated from start to finish.",
       conclusion:
         "Managing a large-scale tournament of this magnitude left very little room for things to go wrong. OneThrive's end-to-end ownership kept the tournament moving smoothly, giving BDO a well-managed sporting experience while taking the load completely off its HR team.",
+    },
+    highlights: {
+      glance: {
+        challenge: "850+ players across two locations in just six days, so coordination and scheduling were critical.",
+        approach: "Complete ownership: a tournament structure for 100+ teams, plus every vendor, official and resource.",
+        outcome: "Ran seamlessly across both locations, with the operational load off BDO's HR team.",
+      },
+      steps: [
+        "Designed a structure to handle 100+ teams across two venues",
+        "Brought together the vendors, officials and resources needed",
+        "Ran registrations, fixtures and brackets",
+        "Adjusted on-site to last-minute requirements without interruptions",
+      ],
+      handled: [
+        "Venue bookings",
+        "Team registrations",
+        "Fixtures & brackets",
+        "Trophies",
+        "Professional umpiring & scoring",
+        "Equipment sourcing",
+        "Catering & hydration",
+        "Full event logistics",
+      ],
+      takeaways: [
+        "The event ran seamlessly across both locations",
+        "No mismanagement despite the colossal scale",
+        "HR didn't have to worry about the operational details themselves",
+      ],
+      feedback: "BDO's HR team called the event excellently coordinated from start to finish.",
+      statement: "End-to-end ownership kept the tournament moving smoothly while taking the load completely off BDO's HR team.",
     },
     cover: { src: g("group-photo", "08"), alt: "A BDO team lined up on the rooftop turf with the Mumbai skyline behind" },
     photos: [
@@ -181,6 +308,37 @@ export const caseStudies: CaseStudy[] = [
       conclusion:
         "For a team that had run this event internally for over 10 years, having an external partner not just match but improve on their own standard was a clear marker of how the event landed. OneThrive became an extension of the Draeger team, managing the complexity behind the scenes while adding new layers of engagement that made their Annual Sports Day feel bigger, smoother and more inclusive.",
     },
+    highlights: {
+      glance: {
+        challenge: "Hand over a Sports Day run in-house for over a decade, across two locations and two days, without losing its warmth.",
+        approach: "The complete sporting experience, from indoor and outdoor sports to box cricket, plus an Engagement Zone for families.",
+        outcome: "Elements missing from previous editions were addressed, and the warmth stayed.",
+      },
+      steps: [
+        "Day 1 at Vasai: Carrom, Chess, Table Tennis, Badminton and Volleyball",
+        "Day 2 at Goregaon: a Box Cricket Tournament",
+        "An Engagement Zone and Carnival Zone for visiting families",
+        "A DJ throughout, with pyro celebrations for the winners",
+      ],
+      handled: [
+        "Indoor game scoring",
+        "Professional umpires",
+        "Live leaderboard",
+        "Tournament format & brackets",
+        "Turf booking",
+        "Trophies & equipment",
+        "Jersey printing",
+        "F&B",
+        "Shaded seating area",
+      ],
+      takeaways: [
+        "HR appreciated the management and coordination throughout",
+        "Several elements missing from previous editions were successfully addressed",
+        "Draeger handed over the operational load without losing the warmth",
+      ],
+      feedback: "The HR team appreciated the management and coordination throughout the event.",
+      statement: "For a team that had run this event internally for over 10 years, having an external partner not just match but improve on their own standard was a clear marker of how the event landed.",
+    },
     cover: { src: g("sports", "33"), alt: "Winning Draeger team holding a Champions banner under the nets" },
     photos: [
       { src: g("sports", "36"), alt: "Winners receiving the trophy in front of the Draeger Premier League banner" },
@@ -216,6 +374,36 @@ export const caseStudies: CaseStudy[] = [
       conclusion:
         "A large single-location celebration can easily turn into a logistical headache if not planned right. Instead, IIFL's Christmas Carnival became a smooth, high-energy event that brought their entire Andheri office together in one go. It's a strong example of how the right mix of activities can make a large-scale office celebration feel effortless.",
     },
+    highlights: {
+      glance: {
+        challenge: "A festive Christmas experience for a large number of employees at the same time, without splitting them into batches.",
+        approach: "A 5-hour Carnival of games, interactive stalls and entertainment, with Christmas décor, under one roof.",
+        outcome: "All employees engaged simultaneously in one office-wide celebration.",
+      },
+      steps: [
+        "Transformed the venue with Christmas décor",
+        "Set up multiple games and interactive stalls",
+        "Let employees move between activities at their own pace",
+        "Kept every attraction running for the full 5 hours",
+      ],
+      handled: [
+        "Cotton Candy",
+        "Balloon Shooting",
+        "Catch the Sticks",
+        "Buzz Wire",
+        "Live Caricature Artist",
+        "Venue décor",
+        "Vendor management",
+        "On-ground coordination",
+      ],
+      takeaways: [
+        "Attendees devoured the candy floss",
+        "They took home their caricatures as keepsakes",
+        "Everyone got competitive across the various games",
+      ],
+      feedback: "The HR team found the event very well managed, with the setup allowing all employees to be engaged simultaneously.",
+      statement: "The right mix of activities can make a large-scale office celebration feel effortless.",
+    },
     cover: { src: g("carnival", "21"), alt: "Office corridor dressed for Christmas with balloons, stars and a Merry Christmas banner" },
     photos: [
       { src: g("carnival", "24"), alt: "Two colleagues biting into cotton candy" },
@@ -249,6 +437,32 @@ export const caseStudies: CaseStudy[] = [
         "The HR team found the session highly energetic and a clear departure from their usual celebrations. The overall response was strong enough that the HR team said they'd readily recommend the format to others.",
       conclusion:
         "The format gave employees two very different ways to participate. Some got creative with their Dandiya, others discovered they could actually pull off a few Garba steps, and eventually the audience became part of the dance floor. Everyone had something to do, something to learn or something to take home.",
+    },
+    highlights: {
+      glance: {
+        challenge: "Celebrate Navratri in a genuinely original way, without leaving people who didn't know Garba as spectators.",
+        approach: "A two-part experience: a Dandiya Decoration Workshop, then a guided Garba Workshop for complete beginners.",
+        outcome: "A highly energetic departure from the usual, which HR would readily recommend.",
+      },
+      steps: [
+        "Dandiya Decoration Workshop: everyone personalised their own pair of sticks",
+        "The sticks went home as a souvenir",
+        "A guided Garba Workshop taught complete beginners the basics",
+        "Everyone came together for the dance",
+      ],
+      handled: [
+        "Dandiya sticks",
+        "Decorative materials & craft supplies",
+        "Professional facilitator",
+        "Prizes for the winners",
+      ],
+      takeaways: [
+        "A clear departure from their usual celebrations",
+        "Beginners could follow along without feeling out of place",
+        "The response was strong enough that HR would readily recommend the format",
+      ],
+      feedback: "The HR team found the session highly energetic and a clear departure from their usual celebrations.",
+      statement: "Everyone had something to do, something to learn or something to take home.",
     },
     cover: { src: g("festive-celebration-navratri", "10"), alt: "Prisma AI colleagues in chaniya cholis dancing garba across the office floor" },
     photos: [

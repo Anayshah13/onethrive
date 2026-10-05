@@ -41,7 +41,6 @@ export const headerNav: Array<NavLink & { children?: ReadonlyArray<(typeof about
   { label: "Services", href: "#offer" },
   { label: "Destinations", href: "#destinations" },
   galleryRoute,
-  contactRoute,
 ];
 
 export const isHash = (href: string) => href.startsWith("#");

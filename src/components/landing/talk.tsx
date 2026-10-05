@@ -107,6 +107,7 @@ export function TalkDrawer() {
       `Name: ${get("name")}`,
       `Company: ${get("company")}`,
       `Work email: ${get("email")}`,
+      `Phone: ${get("phone")}`,
       `Team size: ${get("size") || "Not sure yet"}`,
       "",
       get("message"),
@@ -205,7 +206,10 @@ export function TalkDrawer() {
                       <Field label="Company" name="company" autoComplete="organization" required />
                     </div>
                     <Field label="Work email" name="email" type="email" autoComplete="email" required />
-                    <Field label="Team size" name="size" inputMode="numeric" placeholder="e.g. 40" />
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <Field label="Phone" name="phone" type="tel" autoComplete="tel" placeholder="+91" required />
+                      <Field label="Team size" name="size" inputMode="numeric" placeholder="e.g. 40" />
+                    </div>
                     <label className="flex flex-col gap-1.5 text-sm font-medium">
                       What should the day do?
                       <textarea

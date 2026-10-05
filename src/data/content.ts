@@ -13,7 +13,7 @@ export const contact = {
 
 export const stats = [
   { value: 50, suffix: "+", label: "events curated" },
-  { value: 2000, suffix: "+", label: "participants" },
+  { value: 2000, suffix: "+", label: "participants engaged" },
 ] as const;
 
 export const rating = { score: "4.9", label: "Trusted by teams across all sectors" } as const;
@@ -85,43 +85,37 @@ export const clients = [
   { src: "/clients/DJSCE_Logo.png", alt: "DJSCE" },
 ] as const;
 
-/* Each offer's image sits inside its own shape (see OFFER_SHAPES in offer.tsx). */
+/* Services, in display order. Rendered by the landing "Services" section (offer.tsx). */
 export const offers = [
   {
-    title: "Offsite & MICE",
-    kicker: "Retreats · Conferences",
-    image: "/photos/offsite-group.jpg",
-    blurb: "Multi-day retreats and conferences shaped around how your team actually works.",
-  },
-  {
     title: "Team Building",
-    kicker: "Games · Challenges",
     image: "/photos/balloon-build.jpg",
-    blurb: "Games and challenges that get a room moving in the same direction.",
+    blurb: "Facilitated challenges that sharpen collaboration, trust and communication across teams.",
+    tags: ["Indoor & outdoor", "Problem solving", "Leadership"],
   },
   {
-    title: "Artist Booking",
-    kicker: "Comics · Music · Hosts",
-    image: "/photos/stage-artist.jpg",
-    blurb: "Comics, musicians and hosts, booked and run so the night lands.",
-  },
-  {
-    title: "Day Outing",
-    kicker: "Beach · Park · City",
-    image: "/photos/beach-games.jpg",
-    blurb: "A single day, fully hosted, from the first icebreaker to the last photo.",
-  },
-  {
-    title: "Event Production",
-    kicker: "Stage · Sound · Show",
-    image: "/photos/event-production.jpg",
-    blurb: "Foundation days, carnivals and celebrations, produced end to end.",
+    title: "Offsite",
+    image: "/photos/offsite-group.jpg",
+    blurb: "End-to-end retreats and conferences, planned around your agenda and run on the ground by us.",
+    tags: ["Retreats", "Conferences", "Destination planning"],
   },
   {
     title: "Wellness",
-    kicker: "Yoga · Breath · Sound",
     image: "/photos/desk-yoga.jpg",
-    blurb: "Desk yoga, laughter yoga, sound and breath: sessions people feel the next morning.",
+    blurb: "Guided sessions that help people reset, recharge and return to work with clearer focus.",
+    tags: ["Yoga", "Meditation", "Mental wellbeing"],
+  },
+  {
+    title: "Creative Workshops",
+    image: "/photos/tote-line.jpg",
+    blurb: "Hands-on, expert-led workshops where every participant leaves with something they made.",
+    tags: ["Pottery", "Art & craft", "Painting"],
+  },
+  {
+    title: "Sports Tournaments",
+    image: "/photos/champions.jpg",
+    blurb: "Fully managed leagues and tournaments, from fixtures and venues to referees and trophies.",
+    tags: ["Cricket", "Football", "Multi-sport leagues"],
   },
 ] as const;
 

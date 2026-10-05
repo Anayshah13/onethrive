@@ -23,7 +23,7 @@ export function CaseCover({
         alt={decorative ? "" : study.cover.alt}
         fill
         sizes={sizes}
-        priority={priority}
+        preload={priority}
         className={`object-cover ${className}`}
       />
     );

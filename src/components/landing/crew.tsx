@@ -41,13 +41,6 @@ export function Crew() {
         });
       });
 
-      /* The sticker keeps turning with the scroll. */
-      gsap.to(q("[data-sticker]"), {
-        rotation: 200,
-        ease: "none",
-        scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: 0.8 },
-      });
-
       /* Numbers count up once when the stats row enters. */
       const row = q<HTMLElement>("[data-stats]")[0];
       q<HTMLElement>("[data-count]").forEach((node) => {
@@ -96,23 +89,6 @@ export function Crew() {
               </div>
             );
           })}
-
-          {/* Rotating "Gen Z-led" sticker */}
-          <div className="absolute right-[4%] bottom-[8%] z-40 grid size-24 place-items-center rounded-full bg-ink text-mint shadow-float md:size-28">
-            <svg data-sticker viewBox="0 0 100 100" aria-hidden className="absolute inset-0 size-full">
-              <defs>
-                <path id="crew-sticker-ring" d="M50 50 m-37 0 a37 37 0 1 1 74 0 a37 37 0 1 1 -74 0" />
-              </defs>
-              <text className="fill-mint text-[9px] font-medium uppercase">
-                <textPath href="#crew-sticker-ring" textLength={228} lengthAdjust="spacing">
-                  Gen Z-led · one team · end to end ·
-                </textPath>
-              </text>
-            </svg>
-            <div className="relative size-10 md:size-11">
-              <Image src="/brand/logo-green.png" alt="" fill sizes="44px" className="object-contain" />
-            </div>
-          </div>
         </div>
 
         {/* Copy */}

@@ -8,21 +8,59 @@ import { TalkButton } from "@/components/landing/talk";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { AboutNext, AboutTabs, PageHero } from "@/components/site/page-kit";
 
-/* Left column of the comparison: the fragmented way most teams run engagement today. */
-const PAINS = [
-  "A different vendor for sports, wellness, workshops and the party",
-  "Templated formats that don't flex to your team or goals",
-  "Handoffs and gaps between vendors on the day itself",
-  "No one to call once the invoice is settled",
-];
-
-/* Right column: what changes with one crew end to end. */
-const WINS = [
-  "One relationship for sports, wellness, workshops and the party",
-  "Every format built around your team's size, context and goals",
-  "One crew in the room from setup to the last handshake",
-  "Feedback and outcomes measured after the day, not forgotten",
-];
+/* Comparison rows: the fragmented way most teams run engagement today vs. one crew end to end. */
+const COMPARISON = [
+  {
+    aspect: "Vendors",
+    usual: "A different vendor for sports, wellness, workshops and the party",
+    ours: "One relationship for sports, wellness, workshops and the party",
+  },
+  {
+    aspect: "Format",
+    usual: "Templated formats that don't flex to your team or goals",
+    ours: "Every format built around your team's size, context and goals",
+  },
+  {
+    aspect: "Planning",
+    usual: "You chase quotes, timelines and approvals across five inboxes",
+    ours: "One brief, one plan, one point of contact from day one",
+  },
+  {
+    aspect: "Pricing",
+    usual: "Separate invoices and surprise add-ons that pile up late",
+    ours: "One transparent quote that covers the whole day",
+  },
+  {
+    aspect: "On the day",
+    usual: "Handoffs and gaps between vendors while your team waits",
+    ours: "One crew in the room from setup to the last handshake",
+  },
+  {
+    aspect: "Facilitation",
+    usual: "Hired hosts reading a script to a room they don't know",
+    ours: "Trained facilitators who know your brief and read the room",
+  },
+  {
+    aspect: "Scale",
+    usual: "Formats that break once the group gets past a few dozen",
+    ours: "Runs as well for 10 people as it does for 2,000+",
+  },
+  {
+    aspect: "Location",
+    usual: "Locked to one venue type, or one city",
+    ours: "In-office, offsite or virtual, across cities in India",
+  },
+  {
+    aspect: "Logistics",
+    usual: "Travel, venue, food and kit left for HR to stitch together",
+    ours: "Venue, travel, F&B, kit and photography handled end to end",
+  },
+  {
+    aspect: "After the day",
+    usual: "No one to call once the invoice is settled",
+    ours: "Feedback and outcomes measured after the day, not forgotten",
+  },
+] as const;
 
 /* The five differentiators walked through in the sticky-scroll section. */
 const DIFFERENTIATORS = [
@@ -109,37 +147,40 @@ function Comparison() {
           </h2>
         </Reveal>
 
-        <div className="mt-14 grid gap-6 md:mt-20 lg:grid-cols-2 lg:gap-8">
-          <Reveal>
-            <div className="h-full rounded-[2rem] bg-white/60 p-8 ring-1 ring-ink/8 md:p-10">
-              <p className="text-xs font-medium tracking-[0.18em] text-grey uppercase">The usual way</p>
-              <ul className="mt-6 flex flex-col gap-5">
-                {PAINS.map((pain) => (
-                  <li key={pain} className="flex items-start gap-3 text-ink/55">
-                    <span aria-hidden className="mt-2.5 block h-px w-4 shrink-0 bg-ink/25" />
-                    <span className="leading-relaxed line-through decoration-ink/25">{pain}</span>
-                  </li>
-                ))}
-              </ul>
+        <Reveal className="mt-14 md:mt-20">
+          <div className="overflow-hidden rounded-[2rem] bg-white/70 ring-1 ring-ink/8">
+            {/* Column heads (desktop) */}
+            <div className="hidden grid-cols-[0.55fr_1fr_1fr] md:grid">
+              <span className="px-8 pt-8 pb-5 text-xs font-medium tracking-[0.18em] text-grey uppercase" />
+              <p className="px-8 pt-8 pb-5 text-xs font-medium tracking-[0.18em] text-grey uppercase">The usual way</p>
+              <p className="bg-ink px-8 pt-8 pb-5 text-xs font-medium tracking-[0.18em] text-mint uppercase">OneThrive</p>
             </div>
-          </Reveal>
-
-          <Reveal delay={0.08}>
-            <div className="h-full rounded-[2rem] bg-ink p-8 text-cream shadow-lift md:p-10">
-              <p className="text-xs font-medium tracking-[0.18em] text-mint uppercase">OneThrive</p>
-              <ul className="mt-6 flex flex-col gap-5">
-                {WINS.map((win) => (
-                  <li key={win} className="flex items-start gap-3">
+            <ul>
+              {COMPARISON.map((row) => (
+                <li
+                  key={row.aspect}
+                  className="grid border-t border-ink/8 first:border-t-0 md:grid-cols-[0.55fr_1fr_1fr] md:first:border-t"
+                >
+                  <p className="px-6 pt-5 font-display text-lg font-medium tracking-tight text-ink md:px-8 md:py-5">
+                    {row.aspect}
+                  </p>
+                  <p className="flex items-start gap-3 px-6 pt-2 pb-4 text-ink/50 md:px-8 md:py-5">
+                    <span aria-hidden className="mt-2.5 block h-px w-4 shrink-0 bg-ink/25" />
+                    <span className="sr-only">The usual way: </span>
+                    <span className="leading-relaxed">{row.usual}</span>
+                  </p>
+                  <p className="flex items-start gap-3 bg-ink px-6 py-4 text-cream md:px-8 md:py-5">
                     <span className="mt-0.5 grid size-5 shrink-0 place-items-center rounded-full bg-mint text-ink">
                       <Check className="size-3" />
                     </span>
-                    <span className="leading-relaxed text-cream/85">{win}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </Reveal>
-        </div>
+                    <span className="sr-only">OneThrive: </span>
+                    <span className="leading-relaxed text-cream/85">{row.ours}</span>
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </Reveal>
       </div>
     </section>
   );
@@ -181,6 +222,9 @@ function Differentiators() {
   );
 }
 
+/* Categories left out of the pill cloud (they still count toward the total). */
+const HIDDEN_CATEGORIES = new Set(["Ice Breakers", "Entertainment"]);
+
 /* The breadth of the catalogue: activity categories as an interactive pill cloud. */
 function Breadth() {
   const [active, setActive] = useState<string | null>(null);
@@ -201,7 +245,7 @@ function Breadth() {
         </Reveal>
 
         <Reveal stagger={0.06} className="mt-14 flex flex-wrap justify-center gap-3 md:mt-20">
-          {activities.map((group) => {
+          {activities.filter((group) => !HIDDEN_CATEGORIES.has(group.category)).map((group) => {
             const isActive = active === group.category;
             return (
               <button

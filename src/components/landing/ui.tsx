@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRef } from "react";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { ArrowUpRight } from "./icons";
@@ -90,6 +91,13 @@ export function PillButton({
     </>
   );
 
+  if (href?.startsWith("/")) {
+    return (
+      <Link ref={ref as React.Ref<HTMLAnchorElement>} href={href} onClick={onClick} className={classes}>
+        {inner}
+      </Link>
+    );
+  }
   if (href) {
     return (
       <a ref={ref as React.Ref<HTMLAnchorElement>} href={href} onClick={onClick} className={classes}>

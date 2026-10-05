@@ -15,8 +15,16 @@ export function scrollToHash(hash: string) {
     window.location.assign(`/${hash === "#top" ? "" : hash}`);
     return;
   }
-  if (lenis) lenis.scrollTo(target, { offset: -24, duration: 1.4 });
+  autoScrollUntil = Date.now() + 1800;
+  if (lenis) lenis.scrollTo(target, { offset: -24, duration: 1.4, onComplete: () => (autoScrollUntil = Date.now() + 300) });
   else target.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth" });
+}
+
+let autoScrollUntil = 0;
+
+/* True while a nav click is carrying the page to a section (not the reader scrolling). */
+export function isAutoScrolling() {
+  return Date.now() < autoScrollUntil;
 }
 
 /* Jump to the top without easing, e.g. after a client-side route change. */

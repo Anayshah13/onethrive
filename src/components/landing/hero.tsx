@@ -7,7 +7,6 @@ import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import { ArrowDown } from "./icons";
 
 const DWELL = 6;
-const shortestLabel = stats.reduce((a, b) => (b.label.length < a.label.length ? b : a)).label;
 const FADE = 1.2;
 
 export function Hero() {
@@ -165,11 +164,9 @@ export function Hero() {
         {/* Stats */}
         <dl className="absolute right-6 top-[34%] z-20 flex flex-col items-end gap-4 text-cream md:right-[14%] md:top-[30%] md:gap-8">
           {stats.map((stat) => (
-            <div key={stat.label} className="hero-stat flex flex-col items-end gap-2">
-              <dt className="relative order-2 translate-x-3 text-xs font-extrabold tracking-[0.14em] whitespace-nowrap text-white uppercase md:translate-x-8 md:text-[13px]">
-                {/* Sized to the shortest label so every label starts on the same left edge */}
-                <span aria-hidden className="invisible">{shortestLabel}</span>
-                <span className="absolute top-0 left-0">{stat.label}</span>
+            <div key={stat.label} className="hero-stat flex flex-col items-end gap-1.5 md:gap-2">
+              <dt className="order-2 text-right text-xs font-extrabold tracking-[0.14em] whitespace-nowrap text-white uppercase md:text-[13px]">
+                {stat.label}
               </dt>
               <dd className="order-1 font-display text-[clamp(2.6rem,5vw,4.5rem)] font-medium leading-none tracking-tight tabular-nums">
                 <span data-count={stat.value}>0</span>

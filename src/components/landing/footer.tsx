@@ -158,9 +158,9 @@ export function Footer() {
                 </li>
               ))}
               <li>
-                <button type="button" onClick={() => setOpen(true)} className={`${pillClass} cursor-pointer`}>
+                <Link href="/contact-us" className={pillClass}>
                   Contact Us
-                </button>
+                </Link>
               </li>
             </ul>
           </nav>
@@ -275,7 +275,7 @@ function BoardingPass({ onPlan }: { onPlan: () => void }) {
           </div>
           <div className="min-w-0">
             <dt className="ot-mini">Gate</dt>
-            <dd className="mt-1 font-medium text-ink/85">India &amp; beyond</dd>
+            <dd className="mt-1 font-medium text-ink/85">Pan-India</dd>
           </div>
         </dl>
 
