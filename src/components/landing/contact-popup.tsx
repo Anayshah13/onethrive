@@ -204,7 +204,7 @@ export function ContactPopup() {
                           type="submit"
                           className="group inline-flex cursor-pointer items-center gap-3 rounded-full bg-ink py-1.5 pr-1.5 pl-5 text-sm font-semibold text-cream transition-transform duration-500 ease-spring active:scale-[0.97]"
                         >
-                          Send the brief
+                          Submit
                           <span className="grid size-9 place-items-center rounded-full bg-mint text-ink transition-transform duration-500 ease-spring group-hover:translate-x-0.5 group-hover:scale-105">
                             <Mail className="size-4" />
                           </span>

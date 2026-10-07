@@ -59,7 +59,7 @@ export function GalleryPage() {
           <div
             role="group"
             aria-label="Filter photos by event type"
-            className="relative z-20 -mx-5 flex gap-2 overflow-x-auto px-5 py-3 [scrollbar-width:none] md:top-24 md:mx-0 md:flex-wrap md:justify-center md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
+            className="relative z-20 -mx-5 -mt-6 flex md:-mt-12 gap-2 overflow-x-auto px-5 py-3 [scrollbar-width:none] md:mx-0 md:flex-wrap md:justify-center md:overflow-visible md:px-0 [&::-webkit-scrollbar]:hidden"
           >
             <LayoutGroup id="gallery-filter">
               {filters.map((item) => {

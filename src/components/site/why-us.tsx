@@ -106,7 +106,7 @@ export function WhyUs() {
         eyebrow="Why us"
         lead="One crew for the whole day,"
         accent="not five vendors."
-        crumbs={[{ label: "About us", href: "/about-us" }, { label: "Why us" }]}
+        crumbs={[{ label: "About Us", href: "/about-us" }, { label: "Why us" }]}
       >
         <AboutTabs />
       </PageHero>

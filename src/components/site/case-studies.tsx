@@ -20,7 +20,7 @@ export function CaseStudies() {
         lead="Real briefs."
         accent="Real rooms."
         intro="Real events, told the way they happened: who the client was, what they asked for, what we built, and how the day landed."
-        crumbs={[{ label: "About us", href: "/about-us" }, { label: "Case studies" }]}
+        crumbs={[{ label: "About Us", href: "/about-us" }, { label: "Case studies" }]}
       >
         <AboutTabs />
       </PageHero>

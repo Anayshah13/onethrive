@@ -23,7 +23,7 @@ export function TestimonialsPage() {
         eyebrow="Testimonials"
         lead="Heard after"
         accent="the day."
-        crumbs={[{ label: "About us", href: "/about-us" }, { label: "Testimonials" }]}
+        crumbs={[{ label: "About Us", href: "/about-us" }, { label: "Testimonials" }]}
       >
         <AboutTabs />
       </PageHero>

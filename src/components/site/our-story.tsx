@@ -122,7 +122,7 @@ export function OurStory() {
         eyebrow="Our story"
         lead="We started with one question: why do team days"
         accent="feel forgettable?"
-        crumbs={[{ label: "About us", href: "/about-us" }, { label: "Our story" }]}
+        crumbs={[{ label: "About Us", href: "/about-us" }, { label: "Our story" }]}
       >
         <AboutTabs />
       </PageHero>
@@ -208,24 +208,46 @@ export function OurStory() {
         <Glow className="-z-10 top-10 right-0 size-[26rem]" />
         <PixelCluster cols={12} rows={7} seed={29} className="absolute bottom-10 left-2 hidden opacity-60 md:block" />
         <div className="mx-auto w-full max-w-[1240px] px-5 md:px-8">
-          <Reveal>
-            <span className="eyebrow">What we believe</span>
-            <h2 className="mt-6 max-w-[20ch] font-display text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] font-light tracking-tight text-balance text-ink">
-              The four things we don&apos;t compromise on.
-            </h2>
+          <Reveal className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-12">
+            <div>
+              <span className="eyebrow">What we believe</span>
+              <h2 className="mt-6 max-w-[20ch] font-display text-[clamp(2rem,4vw,3.2rem)] leading-[1.05] font-light tracking-tight text-balance text-ink">
+                The four things we don&apos;t{" "}
+                <span className="font-serif text-emerald italic">compromise on.</span>
+              </h2>
+            </div>
+            <p className="max-w-[38ch] leading-7 text-grey md:pb-2">
+              Every brief is different. These stay the same, whether it&apos;s a 4pm desk yoga session or a three-day
+              offsite.
+            </p>
           </Reveal>
           <Reveal
             as="ul"
             stagger={0.1}
-            className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
+            className="mt-14 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4"
           >
             {beliefs.map((item, i) => (
-              <li key={item.title} className="flex h-full flex-col rounded-2xl bg-white/70 p-6 ring-1 ring-ink/5">
-                <span className="grid size-9 place-items-center rounded-full bg-mint-soft font-display text-sm font-medium text-emerald">
+              <li
+                key={item.title}
+                className="group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-white/80 p-7 ring-1 ring-ink/5 transition-[transform,box-shadow] duration-700 ease-spring hover:-translate-y-1.5 hover:shadow-float"
+              >
+                <span
+                  aria-hidden
+                  className="absolute inset-x-0 top-0 h-1 origin-left scale-x-0 bg-emerald transition-transform duration-700 ease-spring group-hover:scale-x-100"
+                />
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute -right-16 -bottom-16 size-44 rounded-full bg-mint/40 opacity-0 blur-3xl transition-opacity duration-700 group-hover:opacity-100"
+                />
+                <span className="font-display text-6xl leading-none font-light tracking-tighter text-ink/10 transition-colors duration-500 group-hover:text-emerald">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p className="mt-5 font-display text-lg font-medium tracking-tight text-ink">{item.title}</p>
-                <p className="mt-2 text-sm leading-6 text-grey">{item.body}</p>
+                <div className="mt-auto pt-10">
+                  <div className="border-t border-ink/10 pt-5">
+                    <p className="font-display text-xl leading-snug font-medium tracking-tight text-ink">{item.title}</p>
+                    <p className="mt-3 text-[15px] leading-6 text-grey">{item.body}</p>
+                  </div>
+                </div>
               </li>
             ))}
           </Reveal>

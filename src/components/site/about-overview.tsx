@@ -134,11 +134,11 @@ export function AboutOverview() {
   return (
     <>
       <PageHero
-        eyebrow="About us"
+        eyebrow="About Us"
         lead="The crew that makes"
         accent="teams one."
         intro={`${crew.intro} ${aboutCopy}`}
-        crumbs={[{ label: "About us" }]}
+        crumbs={[{ label: "About Us" }]}
       >
         <AboutTabs />
       </PageHero>

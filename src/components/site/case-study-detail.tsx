@@ -80,7 +80,7 @@ function Hero({ study, hasStory }: { study: CaseStudy; hasStory: boolean }) {
                   Home
                 </Link>
               </li>
-              <Crumb href="/about-us">About us</Crumb>
+              <Crumb href="/about-us">About Us</Crumb>
               <Crumb href="/about-us/case-studies">Case studies</Crumb>
               <li className="flex items-center gap-1.5">
                 <span aria-hidden className="text-ink/25">/</span>

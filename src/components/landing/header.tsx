@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { contact } from "@/data/content";
-import { aboutRoot, aboutSections, contactRoute, headerNav, isHash } from "@/data/site";
+import { aboutRoot, aboutSections, contactRoute, headerNav, isHash, serviceSections, servicesRoot } from "@/data/site";
 import { EASE_OUT, gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
 import { ArrowUpRight, Chevron } from "./icons";
 import { lockScroll, scrollToHash } from "./smooth-scroll";
@@ -17,8 +17,9 @@ export function Header() {
   const pathname = usePathname();
   const onHome = pathname === "/";
   const [menu, setMenu] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
-  const [mobileAbout, setMobileAbout] = useState(false);
+  /* Which dropdown is open, keyed by its parent href. */
+  const [openMenu, setOpenMenu] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState<string | null>(null);
   const [active, setActive] = useState<string | null>(null);
   const [hovered, setHovered] = useState<string | null>(null);
   const closeTimer = useRef<number | undefined>(undefined);
@@ -60,7 +61,7 @@ export function Header() {
   if (lastPath !== pathname) {
     setLastPath(pathname);
     setMenu(false);
-    setAboutOpen(false);
+    setOpenMenu(null);
   }
   useEffect(() => lockScroll(false), [pathname]);
 
@@ -83,13 +84,13 @@ export function Header() {
     });
   };
 
-  const openAbout = () => {
+  const openDropdown = (href: string) => {
     window.clearTimeout(closeTimer.current);
-    setAboutOpen(true);
+    setOpenMenu(href);
   };
-  const closeAboutSoon = () => {
+  const closeDropdownSoon = () => {
     window.clearTimeout(closeTimer.current);
-    closeTimer.current = window.setTimeout(() => setAboutOpen(false), 140);
+    closeTimer.current = window.setTimeout(() => setOpenMenu(null), 140);
   };
 
   /* Hash links become home-page links off the home page. */
@@ -143,29 +144,33 @@ export function Header() {
                   className="relative"
                   onMouseEnter={() => {
                     setHovered(item.href);
-                    openAbout();
+                    openDropdown(item.href);
                   }}
-                  onMouseLeave={closeAboutSoon}
-                  onFocus={openAbout}
+                  onMouseLeave={closeDropdownSoon}
+                  onFocus={() => openDropdown(item.href)}
                   onBlur={(event) => {
-                    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setAboutOpen(false);
+                    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setOpenMenu(null);
                   }}
-                  onKeyDown={(event) => event.key === "Escape" && setAboutOpen(false)}
+                  onKeyDown={(event) => event.key === "Escape" && setOpenMenu(null)}
                 >
                   <Link
                     href={item.href}
                     aria-haspopup="true"
-                    aria-expanded={aboutOpen}
+                    aria-expanded={openMenu === item.href}
                     aria-current={isCurrent(item.href) ? "page" : undefined}
                     className={linkClass(item.href)}
                   >
                     {pill(item.href)}
                     <span className="relative">{item.label}</span>
                     <Chevron
-                      className={`relative size-4 transition-transform duration-500 ease-spring ${aboutOpen ? "rotate-180" : ""}`}
+                      className={`relative size-4 transition-transform duration-500 ease-spring ${openMenu === item.href ? "rotate-180" : ""}`}
                     />
                   </Link>
-                  <AboutMenu open={aboutOpen} pathname={pathname} onNavigate={() => setAboutOpen(false)} />
+                  {item.href === servicesRoot.href ? (
+                    <ServicesMenu open={openMenu === item.href} pathname={pathname} onNavigate={() => setOpenMenu(null)} />
+                  ) : (
+                    <AboutMenu open={openMenu === item.href} pathname={pathname} onNavigate={() => setOpenMenu(null)} />
+                  )}
                 </div>
               ) : (
                 <Link
@@ -185,7 +190,7 @@ export function Header() {
 
           <div className="flex items-center gap-2">
             <PillButton href={contactRoute.href} size="md" className="hidden text-base! sm:inline-flex">
-              Plan your event
+              Contact Us
             </PillButton>
             <button
               type="button"
@@ -233,32 +238,32 @@ export function Header() {
                       <>
                         <button
                           type="button"
-                          aria-expanded={mobileAbout}
-                          aria-controls="mobile-about"
-                          onClick={() => setMobileAbout((value) => !value)}
+                          aria-expanded={mobileOpen === item.href}
+                          aria-controls={`mobile-sub-${index}`}
+                          onClick={() => setMobileOpen((value) => (value === item.href ? null : item.href))}
                           className="flex w-full cursor-pointer items-center justify-between py-4 text-left font-display text-4xl font-light tracking-tight"
                         >
                           <span className="flex items-center gap-3">
                             {item.label}
                             <Chevron
                               className={`size-6 text-emerald transition-transform duration-500 ease-spring ${
-                                mobileAbout ? "rotate-180" : ""
+                                mobileOpen === item.href ? "rotate-180" : ""
                               }`}
                             />
                           </span>
                           <span className="font-sans text-xs text-grey">0{index + 1}</span>
                         </button>
                         <AnimatePresence initial={false}>
-                          {mobileAbout && (
+                          {mobileOpen === item.href && (
                             <motion.ul
-                              id="mobile-about"
+                              id={`mobile-sub-${index}`}
                               initial={{ height: 0, opacity: 0 }}
                               animate={{ height: "auto", opacity: 1 }}
                               exit={{ height: 0, opacity: 0 }}
                               transition={{ duration: 0.5, ease: EASE_OUT }}
                               className="overflow-hidden"
                             >
-                              {[{ ...aboutRoot, index: "00" }, ...aboutSections].map((sub) => (
+                              {[{ label: item.label, href: item.href, index: "00" }, ...item.children].map((sub) => (
                                 <li key={sub.href}>
                                   <Link
                                     href={sub.href}
@@ -268,7 +273,7 @@ export function Header() {
                                       pathname === sub.href ? "text-emerald" : "text-ink/75"
                                     }`}
                                   >
-                                    {sub.href === aboutRoot.href ? "Overview" : sub.label}
+                                    {sub.href === item.href ? (item.href === servicesRoot.href ? "All services" : "Overview") : sub.label}
                                     <ArrowUpRight className="size-4 text-grey" />
                                   </Link>
                                 </li>
@@ -303,7 +308,7 @@ export function Header() {
                 onClick={closeMenu}
                 className="grid h-14 place-items-center rounded-full bg-mint font-semibold text-ink"
               >
-                Plan your event
+                Contact Us
               </Link>
               <a href={`mailto:${contact.email}`} className="text-center text-sm text-grey">
                 {contact.email}
@@ -337,7 +342,7 @@ function AboutMenu({ open, pathname, onNavigate }: { open: boolean; pathname: st
                 className="group relative flex flex-col justify-between overflow-hidden rounded-[20px] bg-ink p-5 text-cream"
               >
                 <span aria-hidden className="absolute -top-10 -right-10 size-36 rounded-full bg-mint/25 blur-2xl" />
-                <span className="relative text-xs font-medium tracking-[0.2em] text-mint uppercase">About us</span>
+                <span className="relative text-xs font-medium tracking-[0.2em] text-mint uppercase">About Us</span>
                 <span className="relative mt-10 font-display text-3xl leading-tight font-light tracking-tight">
                   The people behind{" "}
                   <span className="font-serif text-mint italic">the day.</span>
@@ -367,6 +372,80 @@ function AboutMenu({ open, pathname, onNavigate }: { open: boolean; pathname: st
                             <ArrowUpRight className="size-4 -translate-x-1 opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
                           </span>
                           <span className="mt-0.5 block text-sm leading-5 text-grey">{section.blurb}</span>
+                        </span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
+/* Desktop dropdown: the six services as photo-thumb rows, with "All services" as a dark feature tile. */
+function ServicesMenu({ open, pathname, onNavigate }: { open: boolean; pathname: string; onNavigate: () => void }) {
+  return (
+    <AnimatePresence>
+      {open && (
+        <motion.div
+          className="absolute top-full left-1/2 w-188 -translate-x-1/2 pt-4"
+          initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          exit={{ opacity: 0, y: 6, filter: "blur(4px)", transition: { duration: 0.18 } }}
+          transition={{ duration: 0.45, ease: EASE_OUT }}
+        >
+          <div className="rounded-[26px] bg-white p-1.5 shadow-lift ring-1 ring-ink/6">
+            <div className="grid grid-cols-[0.62fr_1.38fr] gap-1.5">
+              <Link
+                href={servicesRoot.href}
+                onClick={onNavigate}
+                aria-current={pathname === servicesRoot.href ? "page" : undefined}
+                className="group relative flex flex-col justify-between overflow-hidden rounded-[20px] bg-ink p-5 text-cream"
+              >
+                <span aria-hidden className="absolute -top-10 -right-10 size-36 rounded-full bg-mint/25 blur-2xl" />
+                <span className="relative text-xs font-medium tracking-[0.2em] text-mint uppercase">Services</span>
+                <span className="relative mt-10 font-display text-3xl leading-tight font-light tracking-tight">
+                  One crew, <span className="font-serif text-mint italic">every format.</span>
+                </span>
+                <span className="relative mt-4 inline-flex items-center gap-2 text-base text-cream/70 transition-colors group-hover:text-mint">
+                  All services
+                  <ArrowUpRight className="size-4 transition-transform duration-500 ease-spring group-hover:rotate-45" />
+                </span>
+              </Link>
+              <ul className="grid grid-cols-2 gap-1">
+                {serviceSections.map((section) => {
+                  const here = pathname === section.href;
+                  return (
+                    <li key={section.href}>
+                      <Link
+                        href={section.href}
+                        onClick={onNavigate}
+                        aria-current={here ? "page" : undefined}
+                        className={`group flex h-full items-center gap-3 rounded-2xl p-2.5 transition-colors duration-300 ${
+                          here ? "bg-mint-wash" : "hover:bg-mint-wash/70"
+                        }`}
+                      >
+                        {section.image && (
+                          <span className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-mint-wash">
+                            <Image
+                              src={section.image}
+                              alt=""
+                              fill
+                              sizes="56px"
+                              className="object-cover transition-transform duration-700 ease-spring group-hover:scale-110"
+                            />
+                          </span>
+                        )}
+                        <span className="min-w-0 flex-1">
+                          <span className="flex items-center justify-between gap-2 text-[15px] font-semibold text-ink">
+                            {section.label}
+                            <ArrowUpRight className="size-4 shrink-0 -translate-x-1 opacity-0 transition-[opacity,transform] duration-300 group-hover:translate-x-0 group-hover:opacity-100" />
+                          </span>
+                          <span className="mt-0.5 block text-[13px] leading-[1.35] text-grey">{section.blurb}</span>
                         </span>
                       </Link>
                     </li>

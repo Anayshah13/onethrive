@@ -109,7 +109,7 @@ export function AboutTabs({ className = "" }: { className?: string }) {
   const items = [{ ...aboutRoot, label: "Overview" }, ...aboutSections];
 
   return (
-    <nav aria-label="About us sections" className={`-mx-5 overflow-x-auto px-5 [scrollbar-width:none] ${className}`}>
+    <nav aria-label="About Us sections" className={`-mx-5 overflow-x-auto px-5 [scrollbar-width:none] ${className}`}>
       <ul className="inline-flex gap-1 rounded-full bg-white/70 p-1.5 shadow-float ring-1 ring-ink/6 backdrop-blur">
         {items.map((item) => {
           const here = pathname === item.href;

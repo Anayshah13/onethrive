@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Glow, PixelCluster } from "@/components/landing/decor";
+import { Glow } from "@/components/landing/decor";
 import { Mail, Phone } from "@/components/landing/icons";
 import { Reveal } from "@/components/landing/reveal";
 import { PillButton } from "@/components/landing/ui";
@@ -10,15 +10,16 @@ import { contact, faqs } from "@/data/content";
 import { EASE_OUT } from "@/lib/gsap";
 import { PageHero } from "@/components/site/page-kit";
 
-const TEAM_SIZES = ["10–25", "25–75", "75–200", "200+"] as const;
+const TEAM_SIZES = ["10–50", "50–100", "100–500", "500–1000", "1000+"] as const;
 
 const ENGAGEMENTS = [
-  "Offsite & MICE",
   "Team Building",
+  "Offsite",
   "Wellness",
-  "Day Outing",
-  "Event Production",
-  "Artist Booking",
+  "Creative Workshops",
+  "Sports Tournaments",
+  "Festive Celebrations",
+  "Virtual",
   "Not sure yet",
 ] as const;
 
@@ -91,11 +92,11 @@ function BriefForm() {
       `Name: ${get("name")}`,
       `Company: ${get("company")}`,
       `Work email: ${get("email")}`,
-      `Phone: ${get("phone") || "Not shared"}`,
+      `Phone: ${get("phone")}`,
       `Team size: ${teamSize ?? "Not sure yet"}`,
       `Engagement: ${engagements.length ? engagements.join(", ") : "Not sure yet"}`,
       `Preferred city/destination: ${get("city") || "Open to suggestions"}`,
-      `Preferred month: ${get("month") || "Flexible"}`,
+      `Preferred month: ${formatMonth(get("month")) || "Flexible"}`,
       "",
       get("message"),
     ].join("\n");
@@ -165,7 +166,7 @@ function BriefForm() {
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Work email" name="email" type="email" autoComplete="email" required />
-                <Field label="Phone" name="phone" type="tel" autoComplete="tel" />
+                <Field label="Phone" name="phone" type="tel" autoComplete="tel" required />
               </div>
 
               <ChipGroup
@@ -186,7 +187,7 @@ function BriefForm() {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Preferred city/destination" name="city" placeholder="e.g. Goa" />
-                <Field label="Preferred month" name="month" placeholder="e.g. January 2027" />
+                <Field label="Preferred month" name="month" type="month" min={thisMonth()} placeholder="e.g. 2027-01" />
               </div>
 
               <label className="flex flex-col gap-1.5 text-sm font-medium">
@@ -208,7 +209,7 @@ function BriefForm() {
                   type="submit"
                   className="group inline-flex cursor-pointer items-center gap-3 rounded-full bg-ink py-1.5 pr-1.5 pl-5 text-sm font-semibold text-cream transition-transform duration-500 ease-spring active:scale-[0.97]"
                 >
-                  Send the brief
+                  Submit
                   <span className="grid size-9 place-items-center rounded-full bg-mint text-ink transition-transform duration-500 ease-spring group-hover:translate-x-0.5 group-hover:scale-105">
                     <Mail className="size-4" />
                   </span>
@@ -220,6 +221,19 @@ function BriefForm() {
       </div>
     </div>
   );
+}
+
+/* Current month as YYYY-MM, the format a month input uses. */
+function thisMonth() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
+
+/* "2027-01" -> "January 2027"; anything else (browsers without a month picker) passes through as typed. */
+function formatMonth(value: string) {
+  const match = /^(\d{4})-(\d{2})$/.exec(value);
+  if (!match) return value;
+  return new Date(Number(match[1]), Number(match[2]) - 1).toLocaleString("en-IN", { month: "long", year: "numeric" });
 }
 
 function Field({
@@ -284,7 +298,6 @@ function ContactCard() {
   return (
     <div className="relative overflow-hidden rounded-[1.75rem] bg-ink p-6 text-cream sm:p-8">
       <div aria-hidden className="absolute -top-16 -right-10 size-56 rounded-full bg-mint/25 blur-3xl" />
-      <PixelCluster cols={10} rows={6} seed={41} className="absolute -bottom-2 -left-2 opacity-15" />
 
       <span className="relative text-[11px] font-medium tracking-[0.2em] text-mint uppercase">Reach us directly</span>
 
